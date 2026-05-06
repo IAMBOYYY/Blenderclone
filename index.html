@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>Forge3D — Professional 3D Editor</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#141414;color:#c8c8c8;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;height:100vh;width:100vw;touch-action:none}
+button{cursor:pointer;font-family:inherit;transition:all .15s}
+input,select{font-family:inherit}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:#1a1a1a}
+::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+
+/* ── HOME ── */
+#home{position:fixed;inset:0;background:#0f0f0f;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.hnav{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;border-bottom:1px solid #1e1e1e;background:#0f0f0f;position:sticky;top:0;z-index:10}
+.hlogo{display:flex;align-items:center;gap:8px}
+.hlogo-icon{width:30px;height:30px;background:linear-gradient(135deg,#e8780a,#ff4400);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.hlogo-txt{font-size:20px;font-weight:900;letter-spacing:3px;color:#fff}
+.hlogo-badge{font-size:9px;background:#e8780a22;color:#e8780a;padding:2px 6px;border-radius:3px;border:1px solid #e8780a44}
+.hhero{text-align:center;padding:50px 20px 40px}
+.hhero-tag{display:inline-block;background:#e8780a15;border:1px solid #e8780a33;border-radius:100px;padding:5px 14px;font-size:10px;color:#e8780a;margin-bottom:20px;letter-spacing:2px}
+.hhero-title{font-size:clamp(40px,10vw,90px);line-height:.9;font-weight:900;color:#fff;margin-bottom:18px}
+.hhero-title span{background:linear-gradient(90deg,#e8780a,#ff6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hhero-sub{font-size:14px;color:#555;max-width:480px;margin:0 auto 30px;line-height:1.8}
+.hbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 16px}
+.hbtn-p{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#e8780a,#ff4400);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:700;box-shadow:0 4px 20px rgba(232,120,10,.35)}
+.hbtn-s{display:flex;align-items:center;gap:6px;background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:600}
+.hstats{display:flex;gap:30px;justify-content:center;margin-top:40px;flex-wrap:wrap;padding:0 20px}
+.hstat-num{font-size:32px;font-weight:900;color:#e8780a;text-align:center}
+.hstat-lbl{font-size:10px;color:#444;letter-spacing:2px;text-align:center;text-transform:uppercase}
+.hsection{max-width:1100px;margin:0 auto;padding:0 20px 50px}
+.htabs{display:flex;border-bottom:1px solid #1e1e1e;margin-bottom:24px}
+.htab{padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;color:#555;font-size:12px;font-weight:700;letter-spacing:.5px}
+.htab.on{color:#fff;border-bottom-color:#e8780a}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:24px}
+.qbtn{display:flex;flex-direction:column;align-items:center;gap:6px;background:#111;border:1px dashed #222;border-radius:8px;padding:16px 10px;font-size:11px;color:#555}
+.qbtn:hover{border-color:#e8780a55;color:#aaa}
+.qbtn .qi{font-size:22px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.pcard{background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:16px;cursor:pointer}
+.pcard:hover{border-color:#e8780a44}
+.pcard-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pcard-icon{width:38px;height:38px;background:linear-gradient(135deg,#e8780a22,#4a90d922);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.pcard-name{font-size:13px;font-weight:700;color:#fff}
+.pcard-meta{font-size:11px;color:#444}
+.pcard-btns{display:flex;gap:6px}
+.pbtn-o{flex:1;background:#e8780a;border:none;border-radius:5px;padding:6px;font-size:11px;color:#fff;font-weight:700}
+.pbtn-d{width:28px;height:28px;background:#1e0a0a;border:1px solid #3a1515;border-radius:5px;color:#e05252;font-size:12px;display:flex;align-items:center;justify-content:center}
+.fempty{text-align:center;padding:50px 20px;color:#333}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.fcard{background:#0e0e0e;border:1px solid #1a1a1a;border-radius:8px;padding:20px}
+.fcard:hover{border-color:#e8780a33}
+.fcard-icon{width:36px;height:36px;background:#e8780a15;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.fcard-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:6px}
+.fcard-desc{font-size:11px;color:#444;line-height:1.7}
+.hfooter{border-top:1px solid #111;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.hfooter-l{font-size:14px;font-weight:900;color:#222;letter-spacing:3px}
+.hfooter-r{font-size:10px;color:#222}
+
+/* ── EDITOR ── */
+#editor{position:fixed;inset:0;display:none;flex-direction:column;background:#141414}
+
+/* Top menu */
+.topmenu{height:28px;background:#111;border-bottom:1px solid #222;display:flex;align-items:stretch;flex-shrink:0;z-index:200;overflow-x:auto;overflow-y:visible}
+.tm-logo{display:flex;align-items:center;padding:0 10px;border-right:1px solid #222;gap:5px;flex-shrink:0}
+.tm-dot{width:13px;height:13px;background:linear-gradient(135deg,#e8780a,#ff4400);border-radius:3px}
+.tm-txt{font-size:12px;font-weight:900;letter-spacing:2px;color:#e8780a}
+.tm-item{position:relative;flex-shrink:0}
+.tm-btn{height:28px;padding:0 10px;background:none;border:none;color:#999;font-size:11px;font-weight:600;white-space:nowrap}
+.tm-btn:hover,.tm-btn.open{background:#1e1e1e;color:#fff}
+.tm-drop{position:absolute;top:28px;left:0;background:#202020;border:1px solid #333;border-radius:5px;min-width:190px;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,.8);padding:3px 0;display:none}
+.tm-drop.show{display:block}
+.tm-di{display:flex;justify-content:space-between;align-items:center;width:100%;padding:6px 12px;background:none;border:none;color:#bbb;font-size:11px;text-align:left;gap:16px;white-space:nowrap}
+.tm-di:hover{background:#2a2a2a;color:#fff}
+.tm-di.red{color:#e05252}
+.tm-sep{height:1px;background:#252525;margin:3px 0}
+.tm-head{padding:3px 12px;font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px}
+.tm-short{color:#555;font-size:10px;font-family:monospace}
+
+/* Header bar */
+.hbar{height:34px;background:#1a1a1a;border-bottom:1px solid #222;display:flex;align-items:center;padding:0 6px;gap:5px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.hbar::-webkit-scrollbar{display:none}
+.modegrp{display:flex;background:#111;border:1px solid #222;border-radius:4px;overflow:hidden;flex-shrink:0}
+.modebtn{padding:0 8px;height:24px;background:none;border:none;color:#666;font-size:10px;font-weight:700;white-space:nowrap}
+.modebtn.on{background:#e8780a;color:#fff}
+.hsep{width:1px;height:18px;background:#222;flex-shrink:0;margin:0 2px}
+.hsel{background:#161616;border:1px solid #222;border-radius:3px;color:#777;font-size:10px;padding:2px 5px;outline:none;flex-shrink:0}
+.shadegrp{display:flex;background:#111;border:1px solid #222;border-radius:4px;overflow:hidden;flex-shrink:0}
+.shadebtn{width:26px;height:24px;background:none;border:none;color:#666;font-size:12px}
+.shadebtn.on{background:#e8780a;color:#fff}
+.ovbtn{width:24px;height:24px;background:#141414;border:1px solid #222;border-radius:3px;color:#555;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ovbtn.on{background:#e8780a22;border-color:#e8780a66;color:#e8780a}
+
+/* Editor body */
+.ebody{flex:1;display:flex;overflow:hidden;min-height:0}
+
+/* Left toolbar - COLLAPSIBLE */
+#ltoolbar{width:40px;background:#1a1a1a;border-right:1px solid #222;display:flex;flex-direction:column;align-items:center;padding:4px 0;gap:2px;overflow-y:auto;flex-shrink:0;transition:width .2s}
+#ltoolbar.collapsed{width:0;padding:0;overflow:hidden}
+.tbtn{width:32px;height:32px;border-radius:5px;background:none;border:1px solid transparent;color:#666;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.tbtn:hover{background:#222;color:#ccc}
+.tbtn.on{background:#e8780a;border-color:#ff9940;color:#fff}
+.tsep{width:26px;height:1px;background:#222;margin:2px 0;flex-shrink:0}
+.ttooltip{position:absolute;left:38px;top:50%;transform:translateY(-50%);background:#111;border:1px solid #333;border-radius:4px;padding:3px 8px;font-size:10px;color:#fff;white-space:nowrap;pointer-events:none;opacity:0;z-index:999;transition:opacity .1s}
+.tbtn:hover .ttooltip{opacity:1}
+
+/* Center */
+.ccol{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.ctabbar{height:26px;background:#161616;border-bottom:1px solid #222;display:flex;align-items:flex-end;padding:0 6px;gap:1px;flex-shrink:0}
+.ctab{padding:0 10px;height:26px;background:none;border:none;border-bottom:2px solid transparent;color:#555;font-size:10px;font-weight:700;white-space:nowrap}
+.ctab.on{color:#fff;border-bottom-color:#e8780a;background:#1e1e1e}
+.viewwrap{flex:1;position:relative;overflow:hidden}
+#vcanvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+#vstats{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:#5ab552;font-family:monospace;font-size:10px;padding:4px 8px;border-radius:3px;pointer-events:none;line-height:1.7;border:1px solid #1a2a1a;display:none}
+#vbadge{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:1px solid #333;border-radius:4px;padding:3px 10px;font-size:10px;color:#ccc;pointer-events:none;white-space:nowrap}
+#vhint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);border:1px solid #1e1e1e;border-radius:4px;padding:3px 10px;font-size:10px;color:#555;pointer-events:none;white-space:nowrap}
+#gizmo{position:absolute;bottom:50px;right:10px;width:64px;height:64px;pointer-events:none}
+
+/* Right panel - COLLAPSIBLE with tabs */
+#rpanel{width:260px;display:flex;flex-direction:column;border-left:1px solid #222;background:#1a1a1a;flex-shrink:0;transition:width .2s;overflow:hidden}
+#rpanel.collapsed{width:0}
+.rtabs{display:flex;border-bottom:1px solid #222;flex-shrink:0}
+.rtab{flex:1;padding:6px 2px;background:none;border:none;border-bottom:2px solid transparent;color:#555;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.rtab.on{color:#fff;border-bottom-color:#e8780a;background:#1e1e1e}
+.rpbody{flex:1;overflow-y:auto;overflow-x:hidden}
+
+/* Panel sections - collapsible */
+.psec-head{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:#141414;border-bottom:1px solid #1a1a1a;cursor:pointer;user-select:none;flex-shrink:0}
+.psec-head:hover{background:#191919}
+.psec-title{font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1px}
+.psec-arr{font-size:8px;color:#444;transition:transform .2s}
+.psec-arr.open{transform:rotate(0deg)}
+.psec-arr.closed{transform:rotate(-90deg)}
+.psec-body{background:#1c1c1c;overflow:hidden;transition:max-height .2s ease}
+.psec-body.open{max-height:600px}
+.psec-body.closed{max-height:0}
+
+/* Properties widgets */
+.prow{display:flex;align-items:center;gap:5px;padding:2px 10px;min-height:22px}
+.plbl{font-size:10px;color:#555;width:54px;flex-shrink:0}
+.pinp{flex:1;background:#111;border:1px solid #222;border-radius:3px;padding:2px 5px;font-size:10px;color:#ccc;outline:none}
+.pinp:focus{border-color:#e8780a}
+.v3row{padding:3px 10px}
+.v3lbl{font-size:9px;color:#555;margin-bottom:2px}
+.v3i{display:flex;gap:2px}
+.vx{flex:1;background:#111;border:1px solid #3a2020;border-radius:3px;padding:2px 3px;font-size:10px;color:#e05252;text-align:center;outline:none;font-family:monospace}
+.vy{flex:1;background:#111;border:1px solid #1a3a1a;border-radius:3px;padding:2px 3px;font-size:10px;color:#5ab552;text-align:center;outline:none;font-family:monospace}
+.vz{flex:1;background:#111;border:1px solid #1a2a3a;border-radius:3px;padding:2px 3px;font-size:10px;color:#4a90d9;text-align:center;outline:none;font-family:monospace}
+.srow{padding:2px 10px}
+.srow-top{display:flex;justify-content:space-between;margin-bottom:1px}
+.slbl{font-size:10px;color:#555}
+.sval{font-size:10px;color:#aaa;font-family:monospace}
+.sli{width:100%;accent-color:#e8780a;cursor:pointer}
+.crow{display:flex;align-items:center;gap:6px;padding:2px 10px}
+.cswatch{width:30px;height:18px;border-radius:2px;border:1px solid #333;cursor:pointer;flex-shrink:0}
+.chex{flex:1;background:#111;border:1px solid #222;border-radius:3px;padding:2px 5px;font-size:10px;color:#ccc;outline:none;font-family:monospace}
+.rbtn{flex:1;padding:3px;background:#1e1e1e;border:1px solid #222;border-radius:3px;font-size:9px;color:#777}
+.rbtn:hover{border-color:#e8780a55;color:#ccc}
+
+/* Outliner */
+.osearch{padding:5px 7px;border-bottom:1px solid #1e1e1e;flex-shrink:0}
+.osearch input{width:100%;background:#111;border:1px solid #222;border-radius:3px;padding:3px 7px;font-size:10px;color:#ccc;outline:none}
+.olist{overflow-y:auto;flex:1}
+.oitem{display:flex;align-items:center;gap:5px;padding:3px 7px;border-bottom:1px solid #111;cursor:pointer;font-size:11px;border-left:2px solid transparent}
+.oitem:hover{background:#1e1e1e}
+.oitem.sel{background:#1a2a3e;border-left-color:#e8780a}
+.ovis{background:none;border:none;font-size:10px;color:#555;flex-shrink:0;padding:0;width:14px;line-height:1}
+.otype{font-size:11px;flex-shrink:0}
+.oname{flex:1;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.oname.sel{color:#fff}
+.obadge{font-size:8px;color:#444;text-transform:uppercase}
+.oacts{padding:5px 7px;border-top:1px solid #1e1e1e;display:flex;gap:3px;flex-shrink:0;flex-wrap:wrap}
+.oact{flex:1;min-width:0;padding:3px 4px;background:#1e1e1e;border:1px solid #222;border-radius:3px;font-size:9px;color:#777;white-space:nowrap}
+.oact:hover{color:#ccc;border-color:#444}
+.oact.del{background:#1a0808;border-color:#2a1010;color:#e05252}
+
+/* Timeline */
+#btmpanel{height:175px;background:#111;border-top:1px solid #222;display:flex;flex-direction:column;flex-shrink:0;transition:height .2s}
+#btmpanel.collapsed{height:0;overflow:hidden}
+.tctrl{height:34px;display:flex;align-items:center;gap:3px;padding:0 8px;border-bottom:1px solid #1a1a1a;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.tctrl::-webkit-scrollbar{display:none}
+.tcbtn{width:26px;height:24px;background:#1a1a1a;border:1px solid #222;border-radius:3px;color:#777;font-size:12px;display:flex;align-items:center;justify-content:center}
+.tcbtn:hover{background:#252525;color:#fff}
+.playbtn{width:30px;height:26px;background:#222;border:1px solid #3a3a3a;border-radius:4px;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center}
+.playbtn.on{background:#e8780a;border-color:#ff9940}
+.tfinp{width:46px;background:#111;border:1px solid #222;border-radius:3px;padding:2px 4px;font-size:10px;color:#e8780a;text-align:center;outline:none;font-family:monospace}
+.tsep2{color:#444;font-size:10px}
+.fpssel{background:#111;border:1px solid #222;border-radius:3px;padding:2px 4px;font-size:10px;color:#777;outline:none}
+.kfbtn{padding:2px 7px;background:#1a1a1a;border:1px solid #e8780a44;border-radius:3px;font-size:9px;color:#e8780a}
+.kfbtn:hover{background:#2a2a1a}
+.tarea{flex:1;display:flex;overflow:hidden;min-height:0}
+.tlbls{width:90px;flex-shrink:0;border-right:1px solid #1a1a1a;overflow:hidden}
+.tlbl-sp{height:20px;border-bottom:1px solid #1a1a1a;background:#0e0e0e}
+.tlbl{height:15px;display:flex;align-items:center;padding:0 7px;border-bottom:1px solid #0e0e0e;font-size:8px;overflow:hidden;white-space:nowrap}
+.ttracks{flex:1;position:relative;overflow-x:auto;overflow-y:hidden;cursor:pointer}
+.truler{height:20px;background:#0e0e0e;border-bottom:1px solid #1a1a1a;position:relative;min-width:100%}
+.ttick{position:absolute;top:4px;font-size:7px;color:#333;font-family:monospace}
+.tph{position:absolute;top:0;width:2px;background:#e8780a;pointer-events:none;z-index:10;border-radius:1px}
+.ttrack{height:15px;border-bottom:1px solid #0e0e0e;position:relative}
+.ttrack:nth-child(even){background:#0e0e0e}
+.tkf{position:absolute;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:6px;height:6px;background:#e8780a;border-radius:1px;cursor:pointer;z-index:5}
+.tphline{position:absolute;top:0;width:2px;background:rgba(232,120,10,.35);pointer-events:none;z-index:4;border-radius:1px}
+
+/* Status bar */
+.sbar{height:20px;background:#0c0c0c;border-top:1px solid #1a1a1a;display:flex;align-items:center;padding:0 10px;gap:12px;flex-shrink:0;overflow:hidden}
+.si{font-size:9px;color:#333;font-family:monospace;white-space:nowrap}
+.si span{color:#666}
+.si.ac span{color:#e8780a}
+
+/* Script editor */
+.seditor{display:flex;height:100%;background:#0c0c0c}
+.ssidebar{width:160px;background:#111;border-right:1px solid #222;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sshead{padding:6px 9px;border-bottom:1px solid #1a1a1a;font-size:9px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:1px}
+.ssnip{display:block;width:100%;padding:6px 10px;background:none;border:none;border-bottom:1px solid #0e0e0e;color:#777;font-size:10px;text-align:left}
+.ssnip:hover{background:#1a1a1a;color:#ccc}
+.smain{flex:1;display:flex;flex-direction:column;min-width:0}
+.stbar{height:34px;background:#111;border-bottom:1px solid #222;display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0}
+.runbtn{display:flex;align-items:center;gap:5px;padding:4px 12px;background:#5ab552;border:none;border-radius:4px;color:#fff;font-size:11px;font-weight:700}
+.runbtn:hover{background:#4a9542}
+.runbtn.busy{background:#252525;color:#666}
+.scarea{flex:1;display:flex;min-height:0}
+.lnums{width:36px;background:#080808;border-right:1px solid #141414;padding:9px 0;flex-shrink:0;overflow:hidden}
+.lnum{height:17px;text-align:right;padding-right:6px;font-size:9px;color:#2a2a2a;font-family:monospace;line-height:17px}
+.scta{flex:1;background:#080808;border:none;color:#c8c8c8;font-family:'Courier New',monospace;font-size:11px;line-height:17px;padding:9px 10px;resize:none;outline:none;tab-size:4}
+.scon{height:120px;border-top:1px solid #1a1a1a;display:flex;flex-direction:column;flex-shrink:0}
+.sconhead{display:flex;justify-content:space-between;align-items:center;padding:2px 8px;background:#0a0a0a;border-bottom:1px solid #141414;flex-shrink:0}
+.scont{font-size:8px;color:#333;text-transform:uppercase;letter-spacing:1px}
+.sclr{padding:1px 5px;background:none;border:1px solid #1a1a1a;border-radius:2px;font-size:8px;color:#333}
+.sclr:hover{border-color:#333;color:#666}
+.slog{flex:1;overflow-y:auto;padding:4px 8px;background:#060606}
+.slogline{font-size:9px;font-family:monospace;line-height:1.8;white-space:pre-wrap}
+.slogline.ok{color:#5ab552}.slogline.cmd{color:#e8780a}.slogline.err{color:#e05252}.slogline.inf{color:#555}
+
+/* Shader editor */
+.sheditor{display:flex;flex-direction:column;height:100%}
+.shetbar{height:34px;background:#111;border-bottom:1px solid #222;display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0}
+.shcanvas{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 50%,#161616 0%,#0e0e0e 100%);cursor:default}
+.ncard{position:absolute;border-radius:6px;border:1px solid #2a2a2a;box-shadow:0 4px 14px rgba(0,0,0,.6);user-select:none;cursor:grab;min-width:180px}
+.ncard.sel{border-color:#e8780a!important;box-shadow:0 0 0 2px rgba(232,120,10,.25)}
+.nhead{padding:5px 9px;border-radius:6px 6px 0 0;display:flex;align-items:center;gap:5px;border-bottom:1px solid #1a1a1a}
+.ndot{width:6px;height:6px;border-radius:50%;background:#e8780a;flex-shrink:0}
+.ntitle{font-size:10px;font-weight:700;color:#fff;flex:1}
+.nslot{display:flex;align-items:center;height:20px;padding:0 7px;font-size:9px;color:#888;position:relative}
+.nslot.ni{padding-left:12px}
+.nslot.no{padding-right:12px;justify-content:flex-end}
+.nsock{width:9px;height:9px;border-radius:50%;position:absolute;cursor:crosshair}
+.nsock.ins{left:-4px;background:#4a90d9;border:2px solid #2a5a8a}
+.nsock.outs{right:-4px;background:#e8780a;border:2px solid #b05e00}
+
+/* Modals */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.mbox{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:10px;padding:24px;max-width:440px;width:100%;max-height:85vh;overflow-y:auto}
+.mtitle{font-size:16px;font-weight:900;color:#fff;margin-bottom:14px;letter-spacing:1px}
+.mclose{float:right;background:none;border:none;color:#555;font-size:18px;margin-top:-2px;line-height:1}
+.mclose:hover{color:#fff}
+.sksec{margin-bottom:14px}
+.sksec-title{font-size:8px;color:#e8780a;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.skrow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid #161616}
+.skkey{font-family:monospace;background:#222;border:1px solid #2a2a2a;border-radius:3px;padding:1px 6px;font-size:10px;color:#fff}
+.skdesc{font-size:10px;color:#555}
+
+/* Mobile panel toggle buttons */
+.mpanel-btns{display:none}
+@media(max-width:768px){
+  .mpanel-btns{display:flex;position:absolute;top:6px;right:6px;gap:4px;z-index:50}
+  .mpbtn{width:30px;height:30px;background:rgba(0,0,0,.7);border:1px solid #333;border-radius:5px;color:#aaa;font-size:14px;display:flex;align-items:center;justify-content:center}
+  #rpanel{position:absolute;right:0;top:0;bottom:0;z-index:40;width:260px;transform:translateX(100%);transition:transform .25s}
+  #rpanel.mobile-open{transform:translateX(0)}
+  #rpanel.collapsed{transform:translateX(100%);width:260px}
+  #ltoolbar{position:absolute;left:0;top:0;bottom:0;z-index:40;width:40px;transform:translateX(-100%);transition:transform .25s}
+  #ltoolbar.mobile-open{transform:translateX(0)}
+  #ltoolbar.collapsed{transform:translateX(-100%);width:40px}
+  .modebtn{font-size:9px;padding:0 5px}
+  #vhint{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HOME PAGE -->
+<div id="home">
+  <nav class="hnav">
+    <div class="hlogo">
+      <div class="hlogo-icon">🔷</div>
+      <div class="hlogo-txt">FORGE3D</div>
+      <div class="hlogo-badge">v1.0</div>
+    </div>
+    <button class="hbtn-p" onclick="openEditor()">⚡ Launch Editor</button>
+  </nav>
+  <div class="hhero">
+    <div class="hhero-tag">✦ PROFESSIONAL 3D IN YOUR BROWSER ✦</div>
+    <h1 class="hhero-title">CREATE<br><span>WITHOUT</span><br>LIMITS</h1>
+    <p class="hhero-sub">Blender & Maya-class 3D editor. Model, sculpt, rig, animate, shade and render — no install needed.</p>
+    <div class="hbtns">
+      <button class="hbtn-p" onclick="newScene();openEditor()">🚀 Start Modeling</button>
+      <label class="hbtn-s">📁 Open Project<input type="file" accept=".f3d,.json" style="display:none" onchange="importProj(event)"/></label>
+    </div>
+    <div class="hstats">
+      <div><div class="hstat-num">60+</div><div class="hstat-lbl">Tools</div></div>
+      <div><div class="hstat-num">0</div><div class="hstat-lbl">Install</div></div>
+      <div><div class="hstat-num">100%</div><div class="hstat-lbl">Browser</div></div>
+      <div><div class="hstat-num">∞</div><div class="hstat-lbl">Projects</div></div>
+    </div>
+  </div>
+  <div class="hsection">
+    <div class="htabs">
+      <button class="htab on" id="htab-r" onclick="switchHTab('r')">📁 Recent Projects</button>
+      <button class="htab" id="htab-l" onclick="switchHTab('l')">📚 Learn</button>
+    </div>
+    <div id="htab-r-body">
+      <div class="qgrid">
+        <button class="qbtn" onclick="newScene();openEditor()"><div class="qi">⬛</div>New Scene</button>
+        <button class="qbtn" onclick="newSceneWith('sphere');openEditor()"><div class="qi">⚫</div>From Sphere</button>
+        <button class="qbtn" onclick="newSceneWith('cylinder');openEditor()"><div class="qi">🔵</div>From Cylinder</button>
+        <label class="qbtn"><div class="qi">📂</div>Import<input type="file" accept=".f3d,.json" style="display:none" onchange="importProj(event)"/></label>
+      </div>
+      <div class="pgrid" id="projlist"></div>
+    </div>
+    <div id="htab-l-body" style="display:none">
+      <div class="fgrid">
+        <div class="fcard"><div class="fcard-icon">🖱️</div><div class="fcard-title">Navigation</div><div class="fcard-desc">Desktop: Right Mouse = Orbit, Shift+Right = Pan, Scroll = Zoom<br>Mobile: 1 finger = Orbit, 2 fingers = Pan/Zoom</div></div>
+        <div class="fcard"><div class="fcard-icon">✂️</div><div class="fcard-title">Selection</div><div class="fcard-desc">Left click to select objects. Shift+click for multi-select. A = Select All.</div></div>
+        <div class="fcard"><div class="fcard-icon">🔧</div><div class="fcard-title">Transform</div><div class="fcard-desc">G = Move, R = Rotate, S = Scale, Del = Delete, Ctrl+D = Duplicate</div></div>
+        <div class="fcard"><div class="fcard-icon">⏱️</div><div class="fcard-title">Animation</div><div class="fcard-desc">Space = Play/Pause, I = Insert Keyframe, Arrow keys = Step frames</div></div>
+        <div class="fcard"><div class="fcard-icon">💾</div><div class="fcard-title">File</div><div class="fcard-desc">Ctrl+S = Save, Ctrl+N = New Scene, Ctrl+D = Duplicate selected</div></div>
+        <div class="fcard"><div class="fcard-icon">📱</div><div class="fcard-title">Mobile Tips</div><div class="fcard-desc">Tap hamburger menus to open panels. Pinch to zoom. Two fingers to pan.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hsection" style="padding-top:0">
+    <div class="fgrid">
+      <div class="fcard"><div class="fcard-icon">⬛</div><div class="fcard-title">3D Modeling</div><div class="fcard-desc">Extrude, loop cut, knife, inset, bevel, subdivide and more.</div></div>
+      <div class="fcard"><div class="fcard-icon">🎨</div><div class="fcard-title">Sculpting</div><div class="fcard-desc">Draw, Inflate, Crease, Smooth, Grab, Flatten brushes.</div></div>
+      <div class="fcard"><div class="fcard-icon">🦴</div><div class="fcard-title">Rigging</div><div class="fcard-desc">Armature creation, bone chains, weight painting ready.</div></div>
+      <div class="fcard"><div class="fcard-icon">⏱️</div><div class="fcard-title">Animation</div><div class="fcard-desc">Full timeline with keyframes, playback and FPS control.</div></div>
+      <div class="fcard"><div class="fcard-icon">🔵</div><div class="fcard-title">PBR Materials</div><div class="fcard-desc">Metalness, roughness, emission, node shader editor.</div></div>
+      <div class="fcard"><div class="fcard-icon">🐍</div><div class="fcard-title">Script Editor</div><div class="fcard-desc">Python-style API with console and live execution.</div></div>
+      <div class="fcard"><div class="fcard-icon">📦</div><div class="fcard-title">Export</div><div class="fcard-desc">OBJ, STL, GLTF and native .f3d format.</div></div>
+      <div class="fcard"><div class="fcard-icon">📱</div><div class="fcard-title">Android Ready</div><div class="fcard-desc">Full touch support. Works great on mobile browsers.</div></div>
+    </div>
+  </div>
+  <div class="hfooter">
+    <div class="hfooter-l">FORGE3D</div>
+    <div class="hfooter-r">Three.js · Pure HTML · Runs in browser · Data saved locally</div>
+  </div>
+</div>
+
+<!-- EDITOR PAGE -->
+<div id="editor">
+
+  <!-- TOP MENU -->
+  <div class="topmenu" id="topmenu">
+    <div class="tm-logo"><div class="tm-dot"></div><div class="tm-txt">FORGE3D</div></div>
+    <div class="tm-item">
+      <button class="tm-btn" onclick="toggleMenu('mf')">File</button>
+      <div class="tm-drop" id="mf">
+        <button class="tm-di" onclick="C('newScene')">New Scene<span class="tm-short">Ctrl+N</span></button>
+        <div class="tm-sep"></div>
+        <button class="tm-di" onclick="C('save')">Save Project<span class="tm-short">Ctrl+S</span></button>
+        <button class="tm-di" onclick="C('saveAs')">Save As…</button>
+        <div class="tm-sep"></div>
+        <button class="tm-di" onclick="C('expOBJ')">Export OBJ</button>
+        <button class="tm-di" onclick="C('expSTL')">Export STL</button>
+        <button class="tm-di" onclick="C('expGLTF')">Export GLTF</button>
+        <button class="tm-di" onclick="C('expF3D')">Export .f3d</button>
+        <div class="tm-sep"></div>
+        <button class="tm-di red" onclick="goHome()">← Back to Home</button>
+      </div>
+    </div>
+    <div class="tm-item">
+      <button class="tm-btn" onclick="toggleMenu('me')">Edit</button>
+      <div class="tm-drop" id="me">
+        <button class="tm-di" onclick="C('selAll')">Select All<span class="tm-short">A</span></button>
+        <button class="tm-di" onclick="C('deselAll')">Deselect All</button>
+        <div class="tm-sep"></div>
+        <button class="tm-di" onclick="C('dup')">Duplicate<span class="tm-short">Ctrl+D</span></button>
+        <button class="tm-di red" onclick="C('del')">Delete<span class="tm-short">Del</span></button>
+      </div>
+    </div>
+    <div class="tm-item">
+      <button class="tm-btn" onclick="toggleMenu('ma')">Add</button>
+      <div class="tm-drop" id="ma">
+        <div class="tm-head">Mesh</div>
+        <button class="tm-di" onclick="addO('cube')">⬛ Cube</button>
+        <button class="tm-di" onclick="addO('sphere')">⚫ UV Sphere</button>
+        <button class="tm-di" onclick="addO('cylinder')">🔵 Cylinder</button>
+        <button class="tm-di" onclick="addO('plane')">▬ Plane</button>
+        <button class="tm-di" onclick="addO('cone')">▲ Cone</button>
+        <button class="tm-di" onclick="addO('torus')">◎ Torus</button>
+        <button class="tm-di" onclick="addO('icosphere')">💎 Icosphere</button>
+        <button class="tm-di" onclick="addO('monkey')">🐵 Suzanne</button>
+        <div class="tm-sep"></div>
+        <div class="tm-head">Other</div>
+        <button class="tm-di" onclick="addO('light')">💡 Point Light</button>
+        <button class="tm-di" onclick="addO('sun')">☀️ Sun Light</button>
+        <button class="tm-di" onclick="addO('camera')">📷 Camera</button>
+        <button class="tm-di" onclick="addO('bone')">🦴 Armature</button>
+        <button class="tm-di" onclick="addO('empty')">◇ Empty</button>
+      </div>
+    </div>
+    <div class="tm-item">
+      <button class="tm-btn" onclick="toggleMenu('mr')">Render</button>
+      <div class="tm-drop" id="mr">
+        <button class="tm-di" onclick="setShade('wireframe')">⬡ Wireframe</button>
+        <button class="tm-di" onclick="setShade('solid')">⬢ Solid</button>
+        <button class="tm-di" onclick="setShade('material')">◉ Material Preview</button>
+        <button class="tm-di" onclick="setShade('rendered')">★ Rendered</button>
+        <div class="tm-sep"></div>
+        <button class="tm-di" onclick="C('togGrid')">Toggle Grid</button>
+        <button class="tm-di" onclick="C('togStats')">Toggle Stats</button>
+      </div>
+    </div>
+    <div class="tm-item">
+      <button class="tm-btn" onclick="toggleMenu('mw')">Window</button>
+      <div class="tm-drop" id="mw">
+        <button class="tm-di" onclick="C('togLeft')">Toggle Left Toolbar</button>
+        <button class="tm-di" onclick="C('togRight')">Toggle Right Panel</button>
+        <button class="tm-di" onclick="C('togBottom')">Toggle Timeline</button>
+      </div>
+    </div>
+    <div class="tm-item">
+      <button class="tm-btn" onclick="toggleMenu('mh')">Help</button>
+      <div class="tm-drop" id="mh">
+        <button class="tm-di" onclick="showModal('mshortcuts')">⌨️ Shortcuts</button>
+        <button class="tm-di" onclick="showModal('mabout')">ℹ️ About</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER BAR -->
+  <div class="hbar">
+    <div class="modegrp">
+      <button class="modebtn on" id="mb-object" onclick="setMode('object')">Object</button>
+      <button class="modebtn" id="mb-edit" onclick="setMode('edit')">Edit</button>
+      <button class="modebtn" id="mb-sculpt" onclick="setMode('sculpt')">Sculpt</button>
+      <button class="modebtn" id="mb-pose" onclick="setMode('pose')">Pose</button>
+    </div>
+    <div class="hsep"></div>
+    <select class="hsel"><option>Median Point</option><option>Individual</option><option>3D Cursor</option><option>World</option></select>
+    <select class="hsel"><option>Global</option><option>Local</option><option>Normal</option></select>
+    <div style="flex:1"></div>
+    <button class="ovbtn on" id="ov-grid" onclick="C('togGrid')" title="Grid">⊞</button>
+    <button class="ovbtn on" id="ov-gizmo" onclick="C('togGizmo')" title="Gizmo">⊹</button>
+    <button class="ovbtn" id="ov-stats" onclick="C('togStats')" title="Stats">▥</button>
+    <div class="hsep"></div>
+    <div class="shadegrp">
+      <button class="shadebtn" id="sh-wireframe" onclick="setShade('wireframe')" title="Wireframe">⬡</button>
+      <button class="shadebtn on" id="sh-solid" onclick="setShade('solid')" title="Solid">⬢</button>
+      <button class="shadebtn" id="sh-material" onclick="setShade('material')" title="Material">◉</button>
+      <button class="shadebtn" id="sh-rendered" onclick="setShade('rendered')" title="Rendered">★</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="ebody">
+
+    <!-- LEFT TOOLBAR -->
+    <div id="ltoolbar">
+      <button class="tbtn on" id="t-select" onclick="setTool('select')"><span>↖</span><span class="ttooltip">Select (W)</span></button>
+      <div class="tsep"></div>
+      <button class="tbtn" id="t-move" onclick="setTool('move')"><span>✥</span><span class="ttooltip">Move (G)</span></button>
+      <button class="tbtn" id="t-rotate" onclick="setTool('rotate')"><span>↻</span><span class="ttooltip">Rotate (R)</span></button>
+      <button class="tbtn" id="t-scale" onclick="setTool('scale')"><span>⇲</span><span class="ttooltip">Scale (S)</span></button>
+      <div class="tsep"></div>
+      <button class="tbtn" id="t-extrude" onclick="setTool('extrude')"><span>⬆</span><span class="ttooltip">Extrude (E)</span></button>
+      <button class="tbtn" id="t-inset" onclick="setTool('inset')"><span>⬡</span><span class="ttooltip">Inset (I)</span></button>
+      <button class="tbtn" id="t-bevel" onclick="setTool('bevel')"><span>◫</span><span class="ttooltip">Bevel (B)</span></button>
+      <button class="tbtn" id="t-loopcut" onclick="setTool('loopcut')"><span>⬒</span><span class="ttooltip">Loop Cut</span></button>
+      <button class="tbtn" id="t-knife" onclick="setTool('knife')"><span>✂</span><span class="ttooltip">Knife (K)</span></button>
+      <div class="tsep"></div>
+      <button class="tbtn" id="t-grab" onclick="setTool('grab')"><span>✋</span><span class="ttooltip">Grab Brush</span></button>
+      <button class="tbtn" id="t-smooth" onclick="setTool('smooth')"><span>◌</span><span class="ttooltip">Smooth</span></button>
+      <button class="tbtn" id="t-inflate" onclick="setTool('inflate')"><span>◎</span><span class="ttooltip">Inflate</span></button>
+      <button class="tbtn" id="t-flatten" onclick="setTool('flatten')"><span>▬</span><span class="ttooltip">Flatten</span></button>
+      <div class="tsep"></div>
+      <button class="tbtn" id="t-measure" onclick="setTool('measure')"><span>⊢</span><span class="ttooltip">Measure</span></button>
+      <button class="tbtn" id="t-cursor" onclick="setTool('cursor')"><span>⊕</span><span class="ttooltip">3D Cursor</span></button>
+      <div style="flex:1"></div>
+      <div class="tsep"></div>
+      <div style="position:relative">
+        <button class="tbtn" onclick="toggleAddMenu()" title="Add (Shift+A)"><span style="font-size:18px;font-weight:900">+</span><span class="ttooltip">Add Object</span></button>
+        <div id="addmenu" style="display:none;position:fixed;background:#202020;border:1px solid #333;border-radius:6px;padding:3px 0;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,.8);min-width:150px"></div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="ccol">
+      <div class="ctabbar">
+        <button class="ctab on" id="ctab-v" onclick="switchTab('v')">🎬 3D Viewport</button>
+        <button class="ctab" id="ctab-s" onclick="switchTab('s')">🔵 Shader</button>
+        <button class="ctab" id="ctab-sc" onclick="switchTab('sc')">🐍 Script</button>
+      </div>
+
+      <!-- VIEWPORT -->
+      <div class="viewwrap" id="tab-v">
+        <canvas id="vcanvas" tabindex="0"></canvas>
+        <div id="vstats"></div>
+        <div id="vbadge">Object Mode — Select</div>
+        <div id="vhint">RMB: Orbit · Scroll: Zoom · Shift+RMB: Pan · LMB: Select</div>
+        <canvas id="gizmo" width="64" height="64"></canvas>
+        <!-- Mobile panel toggle buttons -->
+        <div class="mpanel-btns">
+          <button class="mpbtn" onclick="toggleMobilePanel('left')" title="Tools">🔧</button>
+          <button class="mpbtn" onclick="toggleMobilePanel('right')" title="Panels">⚙️</button>
+        </div>
+      </div>
+
+      <!-- SHADER -->
+      <div class="sheditor" id="tab-s" style="display:none">
+        <div class="shetbar">
+          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px">🔵 Shader Editor</span>
+          <div id="sh-matbadge" style="font-size:10px;color:#e8780a;background:#e8780a11;padding:2px 7px;border-radius:3px;border:1px solid #e8780a22"></div>
+          <div style="flex:1"></div>
+          <div style="position:relative">
+            <button onclick="toggleNodeMenu()" style="padding:3px 10px;background:#e8780a;border:none;border-radius:4px;color:#fff;font-size:10px;font-weight:700">+ Add Node</button>
+            <div id="nodemenu" style="display:none;position:absolute;top:28px;right:0;background:#202020;border:1px solid #333;border-radius:5px;padding:3px 0;z-index:999;min-width:165px;box-shadow:0 8px 24px rgba(0,0,0,.7)">
+              <button class="ssnip" onclick="addSNode('principled')">Principled BSDF</button>
+              <button class="ssnip" onclick="addSNode('diffuse')">Diffuse BSDF</button>
+              <button class="ssnip" onclick="addSNode('glossy')">Glossy BSDF</button>
+              <button class="ssnip" onclick="addSNode('emission')">Emission</button>
+              <button class="ssnip" onclick="addSNode('mix')">Mix Shader</button>
+              <button class="ssnip" onclick="addSNode('color')">RGB Color</button>
+              <button class="ssnip" onclick="addSNode('noise')">Noise Texture</button>
+              <button class="ssnip" onclick="addSNode('fresnel')">Fresnel</button>
+            </div>
+          </div>
+          <button onclick="delSelNode()" style="padding:3px 8px;background:#1a0808;border:1px solid #2a1010;border-radius:4px;color:#e05252;font-size:10px">🗑 Delete</button>
+        </div>
+        <div class="shcanvas" id="shcanvas" onclick="deselNode()">
+          <svg id="shsvg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1"></svg>
+          <div id="shnodes" style="position:absolute;inset:0"></div>
+          <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:10px;color:#1e1e1e;pointer-events:none;white-space:nowrap">Add nodes · Drag to move · Connections auto-link to Output</div>
+        </div>
+      </div>
+
+      <!-- SCRIPT -->
+      <div class="seditor" id="tab-sc" style="display:none">
+        <div class="ssidebar">
+          <div class="sshead">🐍 Script</div>
+          <div class="sshead" style="font-size:8px;padding:3px 9px 2px">SNIPPETS</div>
+          <button class="ssnip" onclick="insSnip('cube')">▸ Add Cube</button>
+          <button class="ssnip" onclick="insSnip('sphere')">▸ Add Sphere</button>
+          <button class="ssnip" onclick="insSnip('selall')">▸ Select All</button>
+          <button class="ssnip" onclick="insSnip('anim')">▸ Animate Pos</button>
+          <button class="ssnip" onclick="insSnip('mat')">▸ New Material</button>
+          <button class="ssnip" onclick="insSnip('list')">▸ List Objects</button>
+          <button class="ssnip" onclick="insSnip('batch')">▸ Batch Create</button>
+          <div style="flex:1"></div>
+          <div style="padding:7px 9px;border-top:1px solid #1a1a1a">
+            <div style="font-size:8px;color:#333;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">API</div>
+            <div style="font-size:8px;color:#4a90d9;font-family:monospace;line-height:2">f3d.ops.mesh<br>f3d.context<br>f3d.data.objects<br>f3d.data.materials</div>
+          </div>
+        </div>
+        <div class="smain">
+          <div class="stbar">
+            <button class="runbtn" id="runbtn" onclick="runScript()">▶ Run (Ctrl+Enter)</button>
+            <button onclick="document.getElementById('scta').value='';updateLnums()" style="padding:3px 8px;background:#1a1a1a;border:1px solid #222;border-radius:4px;color:#666;font-size:10px">Clear</button>
+            <div style="flex:1"></div>
+            <span style="font-size:9px;color:#2a2a2a;font-family:monospace">Forge3D Python API</span>
+          </div>
+          <div class="scarea">
+            <div class="lnums" id="lnums"></div>
+            <textarea class="scta" id="scta" spellcheck="false" onkeydown="scriptKey(event)" oninput="updateLnums()"># Forge3D Script Editor
+# Ctrl+Enter to run
+
+import forge3d as f3d
+
+# Add a cube
+cube = f3d.ops.mesh.primitive_cube_add(
+    size=2, location=(0, 0, 0)
+)
+
+# Create material
+mat = f3d.data.materials.new(name="MyMaterial")
+mat.diffuse_color = (0.8, 0.3, 0.1, 1.0)
+mat.metallic = 0.2
+mat.roughness = 0.5
+cube.data.materials.append(mat)
+
+# Keyframe animation
+cube.location = (0, 0, 0)
+cube.keyframe_insert(data_path="location", frame=1)
+cube.location = (0, 0, 3)
+cube.keyframe_insert(data_path="location", frame=60)
+
+print("Done! Objects: " + str(len(f3d.data.objects)))
+</textarea>
+          </div>
+          <div class="scon">
+            <div class="sconhead">
+              <span class="scont">Console</span>
+              <button class="sclr" onclick="document.getElementById('sconlog').innerHTML=''">Clear</button>
+            </div>
+            <div class="slog" id="sconlog">
+              <div class="slogline inf">Forge3D v1.0 ready.</div>
+              <div class="slogline inf">Three.js r128 loaded.</div>
+              <div class="slogline inf">Type help() for commands.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div id="rpanel">
+      <div class="rtabs">
+        <button class="rtab on" id="rtab-o" onclick="switchRTab('o')">🌳 Outliner</button>
+        <button class="rtab" id="rtab-p" onclick="switchRTab('p')">⚙️ Properties</button>
+      </div>
+      <div class="rpbody" id="rpbody">
+        <div id="rc-o">
+          <div class="osearch"><input type="text" placeholder="🔍 Filter objects..." id="ofilter" oninput="renderOutliner()"/></div>
+          <div class="olist" id="olist" style="max-height:calc(100vh - 320px);overflow-y:auto"></div>
+          <div class="oacts">
+            <button class="oact" onclick="addO('cube')">+Cube</button>
+            <button class="oact" onclick="addO('sphere')">+Sphere</button>
+            <button class="oact" onclick="addO('light')">+Light</button>
+            <button class="oact del" onclick="C('del')">🗑 Del</button>
+          </div>
+        </div>
+        <div id="rc-p" style="display:none">
+          <div id="props-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:#333;font-size:11px">
+            <div style="font-size:28px;margin-bottom:10px">⚙️</div>No object selected
+          </div>
+          <div id="props-main" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div id="btmpanel">
+    <div class="tctrl">
+      <button class="tcbtn" onclick="setFr(0)" title="First">⏮</button>
+      <button class="tcbtn" onclick="stepFr(-1)" title="Prev">⏪</button>
+      <button class="playbtn" id="playbtn" onclick="togglePlay()">▶</button>
+      <button class="tcbtn" onclick="stepFr(1)" title="Next">⏩</button>
+      <button class="tcbtn" onclick="setFr(S.totalFr)" title="Last">⏭</button>
+      <div class="hsep"></div>
+      <input class="tfinp" id="frinp" type="number" value="0" min="0" onchange="setFr(parseInt(this.value)||0)"/>
+      <span class="tsep2">/</span>
+      <input class="tfinp" id="totalfrinp" type="number" value="250" style="color:#666" onchange="S.totalFr=parseInt(this.value)||250"/>
+      <div class="hsep"></div>
+      <select class="fpssel" onchange="S.fps=parseInt(this.value)">
+        <option>12</option><option>24</option><option selected>25</option><option>30</option><option>60</option>
+      </select>
+      <div style="flex:1"></div>
+      <div id="kfbtns" style="display:none;align-items:center;gap:3px">
+        <span style="font-size:9px;color:#444">Insert KF:</span>
+        <button class="kfbtn" onclick="insKF('location')">Loc</button>
+        <button class="kfbtn" onclick="insKF('rotation')">Rot</button>
+        <button class="kfbtn" onclick="insKF('scale')">Scl</button>
+        <button class="kfbtn" onclick="insKF('all')">All</button>
+      </div>
+    </div>
+    <div class="tarea">
+      <div class="tlbls">
+        <div class="tlbl-sp"></div>
+        <div class="tlbl" style="color:#e05252">Loc X</div>
+        <div class="tlbl" style="color:#5ab552">Loc Y</div>
+        <div class="tlbl" style="color:#4a90d9">Loc Z</div>
+        <div class="tlbl" style="color:#e05252">Rot X</div>
+        <div class="tlbl" style="color:#5ab552">Rot Y</div>
+        <div class="tlbl" style="color:#4a90d9">Rot Z</div>
+        <div class="tlbl" style="color:#e05252">Scl X</div>
+        <div class="tlbl" style="color:#5ab552">Scl Y</div>
+        <div class="tlbl" style="color:#4a90d9">Scl Z</div>
+      </div>
+      <div class="ttracks" id="ttracks" onclick="scrubTL(event)">
+        <div class="truler" id="truler"></div>
+        <div id="ttrackbody" style="position:relative">
+          <div class="tphline" id="tphline" style="height:135px"></div>
+          <div class="ttrack" id="tr-lx"></div><div class="ttrack" id="tr-ly"></div><div class="ttrack" id="tr-lz"></div>
+          <div class="ttrack" id="tr-rx"></div><div class="ttrack" id="tr-ry"></div><div class="ttrack" id="tr-rz"></div>
+          <div class="ttrack" id="tr-sx"></div><div class="ttrack" id="tr-sy"></div><div class="ttrack" id="tr-sz"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="sbar">
+    <div class="si ac">FORGE3D <span>v1.0</span></div>
+    <div class="si">Mode:<span id="si-mode">Object</span></div>
+    <div class="si">Tool:<span id="si-tool">Select</span></div>
+    <div class="si">Objs:<span id="si-objs">0</span></div>
+    <div class="si">Sel:<span id="si-sel">0</span></div>
+    <div class="si">Active:<span id="si-act">—</span></div>
+    <div style="flex:1"></div>
+    <div class="si">Fr:<span id="si-fr">0</span></div>
+    <div class="si">Tris:<span id="si-tris">0</span></div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal" id="mshortcuts" onclick="closeModal('mshortcuts')">
+  <div class="mbox" onclick="event.stopPropagation()">
+    <button class="mclose" onclick="closeModal('mshortcuts')">✕</button>
+    <div class="mtitle">⌨️ Keyboard Shortcuts</div>
+    <div class="sksec"><div class="sksec-title">Navigation</div>
+      <div class="skrow"><span class="skkey">RMB drag</span><span class="skdesc">Orbit camera</span></div>
+      <div class="skrow"><span class="skkey">Shift+RMB</span><span class="skdesc">Pan camera</span></div>
+      <div class="skrow"><span class="skkey">Scroll</span><span class="skdesc">Zoom in/out</span></div>
+    </div>
+    <div class="sksec"><div class="sksec-title">Selection</div>
+      <div class="skrow"><span class="skkey">LMB</span><span class="skdesc">Select</span></div>
+      <div class="skrow"><span class="skkey">Shift+LMB</span><span class="skdesc">Add to selection</span></div>
+      <div class="skrow"><span class="skkey">A</span><span class="skdesc">Select All / None</span></div>
+    </div>
+    <div class="sksec"><div class="sksec-title">Transform</div>
+      <div class="skrow"><span class="skkey">G</span><span class="skdesc">Move tool</span></div>
+      <div class="skrow"><span class="skkey">R</span><span class="skdesc">Rotate tool</span></div>
+      <div class="skrow"><span class="skkey">S</span><span class="skdesc">Scale tool</span></div>
+      <div class="skrow"><span class="skkey">Del</span><span class="skdesc">Delete selected</span></div>
+      <div class="skrow"><span class="skkey">Ctrl+D</span><span class="skdesc">Duplicate</span></div>
+    </div>
+    <div class="sksec"><div class="sksec-title">Mobile / Touch</div>
+      <div class="skrow"><span class="skkey">1 finger drag</span><span class="skdesc">Orbit</span></div>
+      <div class="skrow"><span class="skkey">2 finger drag</span><span class="skdesc">Pan</span></div>
+      <div class="skrow"><span class="skkey">Pinch</span><span class="skdesc">Zoom</span></div>
+      <div class="skrow"><span class="skkey">Tap object</span><span class="skdesc">Select</span></div>
+    </div>
+    <button onclick="closeModal('mshortcuts')" style="margin-top:14px;background:#e8780a;border:none;border-radius:6px;padding:7px 20px;color:#fff;font-size:12px;font-weight:700">Close</button>
+  </div>
+</div>
+<div class="modal" id="mabout" onclick="closeModal('mabout')">
+  <div class="mbox" onclick="event.stopPropagation()" style="text-align:center">
+    <div style="font-size:36px;margin-bottom:6px">🔷</div>
+    <div class="mtitle" style="letter-spacing:4px">FORGE3D</div>
+    <div style="font-size:11px;color:#444;margin-bottom:14px">v1.0 — Professional Browser 3D Editor</div>
+    <p style="font-size:12px;color:#555;line-height:1.8">Three.js powered. Pure HTML. No install. Works on desktop and Android. Projects saved in your browser.</p>
+    <button onclick="closeModal('mabout')" style="margin-top:16px;background:#e8780a;border:none;border-radius:6px;padding:7px 20px;color:#fff;font-size:12px;font-weight:700">Close</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// FORGE3D — Complete Application
+// Fixed: orbit, move, touch, clean panel UI
+// ═══════════════════════════════════════════
+
+const S = {
+  mode:'object', tool:'select', shading:'solid',
+  curFr:0, totalFr:250, fps:25, playing:false,
+  showGrid:true, showStats:false, showGizmo:true,
+  selIds:[], objs:[], mats:[], kfs:{},
+  projName:'Untitled Project', nid:10,
+  showLeft:true, showRight:true, showBottom:true,
+}
+
+// ── DEFAULT SCENE ──
+function initScene(){
+  S.objs=[
+    {id:'o1',name:'Cube',  type:'mesh',  mesh:'cube',     pos:[0,0,0],rot:[0,0,0],scl:[1,1,1],vis:true,matId:'m1'},
+    {id:'o2',name:'Light', type:'light', pos:[3,5,3],     rot:[0,0,0],scl:[1,1,1],vis:true,color:'#ffffff',intensity:1},
+    {id:'o3',name:'Camera',type:'camera',pos:[7,4,7],     rot:[0,0,0],scl:[1,1,1],vis:true},
+  ]
+  S.mats=[{id:'m1',name:'Material',color:'#4a90d9',metalness:.1,roughness:.7,wireframe:false,emissive:0}]
+  S.selIds=['o1']; S.kfs={}; S.curFr=0; S.playing=false; S.projName='Untitled Project'
+}
+
+// ── THREE.JS ──
+let R,SC,CAM,threeObjs={},playIval=null
+const orbit={theta:.8,phi:1.1,radius:12,tx:0,ty:0,tz:0}
+// Mouse tracking (desktop)
+const ms={rmb:false,mmb:false,shift:false,lx:0,ly:0}
+// Touch tracking (mobile)
+const tc={active:false,prev:[],dist:0}
+
+function initThree(){
+  const canvas=document.getElementById('vcanvas')
+  R=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'})
+  R.setPixelRatio(Math.min(window.devicePixelRatio,2))
+  R.shadowMap.enabled=true; R.shadowMap.type=THREE.PCFSoftShadowMap
+  R.toneMapping=THREE.ACESFilmicToneMapping; R.toneMappingExposure=1
+
+  SC=new THREE.Scene()
+  SC.background=new THREE.Color(0x1c1c1c)
+  SC.fog=new THREE.FogExp2(0x1c1c1c,.016)
+
+  CAM=new THREE.PerspectiveCamera(60,1,.01,1000)
+  updateCam()
+
+  // Lights
+  SC.add(new THREE.AmbientLight(0xffffff,.5))
+  const sun=new THREE.DirectionalLight(0xffffff,1.2)
+  sun.position.set(5,8,5); sun.castShadow=true
+  sun.shadow.mapSize.set(2048,2048)
+  sun.shadow.camera.left=-15;sun.shadow.camera.right=15
+  sun.shadow.camera.top=15;sun.shadow.camera.bottom=-15
+  SC.add(sun)
+  SC.add(Object.assign(new THREE.DirectionalLight(0x8ab4f8,.3),{position:new THREE.Vector3(-5,3,-5)}))
+
+  const grid=new THREE.GridHelper(20,20,0x444444,0x2a2a2a)
+  grid.name='__grid'; grid.material.transparent=true; grid.material.opacity=.7
+  SC.add(grid)
+  SC.add(new THREE.AxesHelper(1.5))
+
+  // RESIZE
+  new ResizeObserver(()=>{
+    const w=canvas.parentElement.clientWidth, h=canvas.parentElement.clientHeight
+    R.setSize(w,h); CAM.aspect=w/h; CAM.updateProjectionMatrix()
+  }).observe(canvas.parentElement)
+  const {clientWidth:w,clientHeight:h}=canvas.parentElement
+  R.setSize(w,h); CAM.aspect=w/h; CAM.updateProjectionMatrix()
+
+  // ── DESKTOP MOUSE ──
+  canvas.addEventListener('mousedown',e=>{
+    ms.shift=e.shiftKey
+    ms.lx=e.clientX; ms.ly=e.clientY
+    if(e.button===2){ms.rmb=true; e.preventDefault()}
+    else if(e.button===1){ms.mmb=true; e.preventDefault()}
+    else if(e.button===0){
+      if(e.shiftKey && ms.rmb) return
+      doSelect(e.clientX,e.clientY,e.shiftKey)
+    }
+  })
+  canvas.addEventListener('mousemove',e=>{
+    const dx=e.clientX-ms.lx, dy=e.clientY-ms.ly
+    ms.lx=e.clientX; ms.ly=e.clientY
+    if(ms.rmb){
+      if(e.shiftKey){
+        // Pan with Shift+RMB
+        panCam(dx,dy)
+      } else {
+        // Orbit with RMB
+        orbit.theta -= dx*0.008
+        orbit.phi = Math.max(.05, Math.min(Math.PI-.05, orbit.phi+dy*0.008))
+        updateCam()
+      }
+    }
+    if(ms.mmb){ panCam(dx,dy) }
+  })
+  window.addEventListener('mouseup',e=>{
+    if(e.button===2) ms.rmb=false
+    if(e.button===1) ms.mmb=false
+  })
+  canvas.addEventListener('wheel',e=>{
+    e.preventDefault()
+    orbit.radius=Math.max(.5,Math.min(150,orbit.radius*(1+e.deltaY*.001)))
+    updateCam()
+  },{passive:false})
+  canvas.addEventListener('contextmenu',e=>e.preventDefault())
+
+  // ── MOBILE TOUCH ──
+  canvas.addEventListener('touchstart',e=>{
+    e.preventDefault()
+    const touches=[...e.touches]
+    tc.prev=touches.map(t=>({x:t.clientX,y:t.clientY}))
+    if(touches.length===2){
+      tc.dist=Math.hypot(touches[1].clientX-touches[0].clientX,touches[1].clientY-touches[0].clientY)
+    }
+    if(touches.length===1){
+      // single tap = select (check if it's a tap not a drag)
+      tc._tapX=touches[0].clientX; tc._tapY=touches[0].clientY; tc._tapMoved=false
+    }
+  },{passive:false})
+  canvas.addEventListener('touchmove',e=>{
+    e.preventDefault()
+    const touches=[...e.touches]
+    const prev=tc.prev
+    if(touches.length===1 && prev.length>=1){
+      const dx=touches[0].clientX-prev[0].x
+      const dy=touches[0].clientY-prev[0].y
+      if(Math.abs(dx)>2||Math.abs(dy)>2) tc._tapMoved=true
+      // 1 finger = orbit
+      orbit.theta -= dx*0.010
+      orbit.phi = Math.max(.05,Math.min(Math.PI-.05,orbit.phi+dy*0.010))
+      updateCam()
+    }
+    if(touches.length===2 && prev.length>=2){
+      const dx=(touches[0].clientX+touches[1].clientX)/2-(prev[0].x+prev[1].x)/2
+      const dy=(touches[0].clientY+touches[1].clientY)/2-(prev[0].y+prev[1].y)/2
+      // 2 finger pan
+      panCam(dx*1.5,dy*1.5)
+      // pinch zoom
+      const dist=Math.hypot(touches[1].clientX-touches[0].clientX,touches[1].clientY-touches[0].clientY)
+      if(tc.dist>0){
+        const scale=tc.dist/dist
+        orbit.radius=Math.max(.5,Math.min(150,orbit.radius*scale))
+        updateCam()
+      }
+      tc.dist=dist
+      tc._tapMoved=true
+    }
+    tc.prev=touches.map(t=>({x:t.clientX,y:t.clientY}))
+  },{passive:false})
+  canvas.addEventListener('touchend',e=>{
+    e.preventDefault()
+    if(!tc._tapMoved && e.changedTouches.length===1){
+      doSelect(tc._tapX,tc._tapY,false)
+    }
+    tc.prev=[]; tc.dist=0; tc._tapMoved=false
+  },{passive:false})
+
+  // Keyboard
+  canvas.setAttribute('tabindex','0')
+  canvas.addEventListener('keydown',onKey)
+
+  renderLoop()
+  buildRuler()
+  updateLnums()
+}
+
+function panCam(dx,dy){
+  const right=new THREE.Vector3().crossVectors(
+    CAM.getWorldDirection(new THREE.Vector3()), CAM.up
+  ).normalize()
+  const up=CAM.up.clone().normalize()
+  const spd=orbit.radius*.0015
+  orbit.tx -= right.x*dx*spd; orbit.ty -= right.y*dx*spd; orbit.tz -= right.z*dx*spd
+  orbit.tx += up.x*dy*spd;    orbit.ty += up.y*dy*spd;    orbit.tz += up.z*dy*spd
+  updateCam()
+}
+
+function updateCam(){
+  if(!CAM) return
+  const {theta,phi,radius,tx,ty,tz}=orbit
+  CAM.position.set(tx+radius*Math.sin(phi)*Math.sin(theta),ty+radius*Math.cos(phi),tz+radius*Math.sin(phi)*Math.cos(theta))
+  CAM.lookAt(tx,ty,tz)
+}
+
+function mkGeo(mesh){
+  switch(mesh){
+    case 'sphere':    return new THREE.SphereGeometry(1,32,32)
+    case 'cylinder':  return new THREE.CylinderGeometry(1,1,2,32)
+    case 'plane':     return new THREE.PlaneGeometry(2,2,4,4)
+    case 'cone':      return new THREE.ConeGeometry(1,2,32)
+    case 'torus':     return new THREE.TorusGeometry(1,.4,16,64)
+    case 'icosphere': return new THREE.IcosahedronGeometry(1,2)
+    case 'monkey':    return new THREE.IcosahedronGeometry(1,3)
+    default:          return new THREE.BoxGeometry(2,2,2)
+  }
+}
+
+function mkMat(obj){
+  const m=S.mats.find(x=>x.id===obj.matId)
+  if(S.shading==='wireframe') return new THREE.MeshBasicMaterial({color:0x888888,wireframe:true})
+  return new THREE.MeshStandardMaterial({
+    color:new THREE.Color(m?.color||'#4a90d9'),
+    roughness:m?.roughness??0.7, metalness:m?.metalness??0.1,
+    wireframe:m?.wireframe||false,
+    emissive:new THREE.Color(m?.color||'#000'),
+    emissiveIntensity:m?.emissive||0,
+  })
+}
+
+let fpsCount=0,fpsLast=Date.now(),fpsCur=60
+function renderLoop(){
+  requestAnimationFrame(renderLoop)
+  fpsCount++
+  const now=Date.now()
+  if(now-fpsLast>600){fpsCur=Math.round(fpsCount/((now-fpsLast)/1000));fpsCount=0;fpsLast=now}
+
+  syncObjs()
+
+  const grid=SC.getObjectByName('__grid')
+  if(grid) grid.visible=S.showGrid
+  R.render(SC,CAM)
+
+  const vstats=document.getElementById('vstats')
+  if(S.showStats){
+    const i=R.info; vstats.style.display='block'
+    vstats.innerHTML=`FPS:${fpsCur}<br>Draw:${i.render.calls}<br>Tris:${i.render.triangles}`
+  } else vstats.style.display='none'
+
+  // Status bar
+  el('si-fr').textContent=S.curFr
+  el('si-tris').textContent=R.info.render.triangles
+  el('si-objs').textContent=S.objs.length
+  el('si-sel').textContent=S.selIds.length
+  const act=S.objs.find(o=>S.selIds.includes(o.id))
+  el('si-act').textContent=act?act.name:'—'
+
+  drawGizmo()
+}
+
+function syncObjs(){
+  const ids=new Set(S.objs.map(o=>o.id))
+  for(const id in threeObjs){
+    const base=id.replace('_h','')
+    if(!ids.has(base)){
+      const m=threeObjs[id]; SC.remove(m)
+      if(m.geometry)m.geometry.dispose()
+      if(m.material)m.material.dispose()
+      delete threeObjs[id]
+    }
+  }
+  S.objs.forEach(obj=>{
+    let m=threeObjs[obj.id]
+    if(obj.type==='mesh'){
+      if(!m){
+        m=new THREE.Mesh(mkGeo(obj.mesh),mkMat(obj))
+        m.castShadow=true; m.receiveShadow=true; m.userData.id=obj.id
+        SC.add(m); threeObjs[obj.id]=m
+      }
+      m.position.set(...obj.pos)
+      m.rotation.set(...obj.rot)
+      m.scale.set(...obj.scl)
+      m.visible=obj.vis
+      const sel=S.selIds.includes(obj.id)
+      m.material.emissive.set(sel?0xe8780a:0x000000)
+      m.material.emissiveIntensity=sel?.18:(S.mats.find(x=>x.id===obj.matId)?.emissive||0)
+    } else if(obj.type==='light'){
+      if(!m){
+        m=new THREE.PointLight(obj.color||'#fff',obj.intensity||1,30)
+        SC.add(m)
+        const h=new THREE.PointLightHelper(m,.35)
+        SC.add(h); threeObjs[obj.id+'_h']=h; threeObjs[obj.id]=m
+      }
+      m.position.set(...obj.pos); m.color.set(obj.color||'#fff'); m.intensity=obj.intensity||1; m.visible=obj.vis
+      const h=threeObjs[obj.id+'_h']; if(h){h.visible=obj.vis;h.update()}
+    } else if(obj.type==='camera'){
+      if(!m){m=new THREE.Mesh(new THREE.ConeGeometry(.3,.6,8),new THREE.MeshBasicMaterial({color:0x888888,wireframe:true}));SC.add(m);threeObjs[obj.id]=m}
+      m.position.set(...obj.pos); m.visible=obj.vis
+    } else {
+      if(!m){m=new THREE.Mesh(new THREE.OctahedronGeometry(.2),new THREE.MeshBasicMaterial({color:0xe8780a,wireframe:true}));SC.add(m);threeObjs[obj.id]=m}
+      m.position.set(...obj.pos); m.visible=obj.vis
+    }
+  })
+}
+
+function doSelect(cx,cy,additive){
+  const canvas=document.getElementById('vcanvas')
+  const rect=canvas.getBoundingClientRect()
+  const mv=new THREE.Vector2(((cx-rect.left)/rect.width)*2-1,-((cy-rect.top)/rect.height)*2+1)
+  const ray=new THREE.Raycaster()
+  ray.setFromCamera(mv,CAM)
+  const meshes=Object.values(threeObjs).filter(o=>o.isMesh&&o.userData.id)
+  const hits=ray.intersectObjects(meshes)
+  if(hits.length){
+    const id=hits[0].object.userData.id
+    if(additive){
+      S.selIds.includes(id)?S.selIds=S.selIds.filter(i=>i!==id):S.selIds.push(id)
+    } else S.selIds=[id]
+  } else if(!additive) S.selIds=[]
+  refreshUI()
+}
+
+function onKey(e){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return
+  const k=e.key
+  if(k==='Delete'||k==='Backspace') C('del')
+  else if(k==='a'||k==='A'){if(!e.ctrlKey){S.selIds.length===S.objs.length?S.selIds=[]:S.selIds=S.objs.map(o=>o.id);refreshUI()}}
+  else if(k==='g') setTool('move')
+  else if(k==='r') setTool('rotate')
+  else if(k==='s'&&!e.ctrlKey) setTool('scale')
+  else if(k==='i'||k==='I') insKF('all')
+  else if(k==='Tab'){e.preventDefault();setMode(S.mode==='edit'?'object':'edit')}
+  else if(k===' '){e.preventDefault();togglePlay()}
+  else if(k==='ArrowLeft') stepFr(-1)
+  else if(k==='ArrowRight') stepFr(1)
+  if(e.ctrlKey){
+    if(k==='s'){e.preventDefault();C('save')}
+    if(k==='d'){e.preventDefault();C('dup')}
+    if(k==='n'){e.preventDefault();C('newScene')}
+  }
+}
+
+function drawGizmo(){
+  const c=document.getElementById('gizmo'); if(!c||!S.showGizmo){if(c)c.getContext('2d').clearRect(0,0,64,64);return}
+  const ctx=c.getContext('2d'); ctx.clearRect(0,0,64,64)
+  const cx=32,cy=32,r=26
+  const axes=[{l:'X',d:new THREE.Vector3(1,0,0),col:'#e05252'},{l:'Y',d:new THREE.Vector3(0,1,0),col:'#5ab552'},{l:'Z',d:new THREE.Vector3(0,0,1),col:'#4a90d9'}]
+  axes.map(a=>{const v=a.d.clone().applyQuaternion(CAM.quaternion);return{...a,x2:cx+v.x*r,y2:cy-v.y*r,dep:v.z}}).sort((a,b)=>a.dep-b.dep).forEach(({l,x2,y2,col})=>{
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke()
+    ctx.beginPath();ctx.arc(x2,y2,5,0,Math.PI*2);ctx.fillStyle=col;ctx.fill()
+    ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l,x2,y2)
+  })
+}
+
+// ── COMMANDS ──
+function C(a){
+  closeMenus()
+  const selObjs=()=>S.objs.filter(o=>S.selIds.includes(o.id))
+  switch(a){
+    case 'newScene': if(confirm('New scene? Unsaved changes lost.')){newScene();refreshUI()} break
+    case 'save': saveProj(); break
+    case 'saveAs': {const n=prompt('Project name:',S.projName);if(n){S.projName=n;saveProj()}} break
+    case 'expOBJ': expOBJ(); break
+    case 'expSTL': expSTL(); break
+    case 'expGLTF': expGLTF(); break
+    case 'expF3D': expF3D(); break
+    case 'selAll': S.selIds=S.objs.map(o=>o.id); refreshUI(); break
+    case 'deselAll': S.selIds=[]; refreshUI(); break
+    case 'dup': {
+      const news=selObjs().map(o=>({...JSON.parse(JSON.stringify(o)),id:'o'+(++S.nid),name:o.name+'.001',pos:[o.pos[0]+1,o.pos[1],o.pos[2]]}))
+      S.objs.push(...news); S.selIds=news.map(o=>o.id); refreshUI()
+    } break
+    case 'del': S.objs=S.objs.filter(o=>!S.selIds.includes(o.id)); S.selIds=[]; refreshUI(); break
+    case 'togGrid': S.showGrid=!S.showGrid; el('ov-grid').classList.toggle('on',S.showGrid); break
+    case 'togStats': S.showStats=!S.showStats; el('ov-stats').classList.toggle('on',S.showStats); break
+    case 'togGizmo': S.showGizmo=!S.showGizmo; el('ov-gizmo').classList.toggle('on',S.showGizmo); break
+    case 'togLeft':
+      S.showLeft=!S.showLeft
+      el('ltoolbar').classList.toggle('collapsed',!S.showLeft)
+      break
+    case 'togRight':
+      S.showRight=!S.showRight
+      el('rpanel').classList.toggle('collapsed',!S.showRight)
+      break
+    case 'togBottom':
+      S.showBottom=!S.showBottom
+      el('btmpanel').classList.toggle('collapsed',!S.showBottom)
+      break
+  }
+}
+
+function addO(type){
+  closeMenus()
+  const id='o'+(++S.nid)
+  const defs={
+    cube:{name:'Cube',type:'mesh',mesh:'cube'},sphere:{name:'Sphere',type:'mesh',mesh:'sphere'},
+    cylinder:{name:'Cylinder',type:'mesh',mesh:'cylinder'},plane:{name:'Plane',type:'mesh',mesh:'plane'},
+    cone:{name:'Cone',type:'mesh',mesh:'cone'},torus:{name:'Torus',type:'mesh',mesh:'torus'},
+    icosphere:{name:'Icosphere',type:'mesh',mesh:'icosphere'},monkey:{name:'Suzanne',type:'mesh',mesh:'monkey'},
+    light:{name:'Light',type:'light',color:'#ffffff',intensity:1},sun:{name:'Sun',type:'light',color:'#fff8e0',intensity:1.5},
+    camera:{name:'Camera',type:'camera'},bone:{name:'Armature',type:'armature'},empty:{name:'Empty',type:'empty'},
+  }
+  const d=defs[type]||defs.cube
+  S.objs.push({id,pos:[0,0,0],rot:[0,0,0],scl:[1,1,1],vis:true,matId:'m1',...d})
+  S.selIds=[id]; refreshUI()
+}
+
+function setMode(m){
+  S.mode=m
+  document.querySelectorAll('.modebtn').forEach(b=>b.classList.remove('on'))
+  el('mb-'+m)?.classList.add('on')
+  el('vbadge').textContent=m.charAt(0).toUpperCase()+m.slice(1)+' Mode — '+S.tool
+  el('si-mode').textContent=m.charAt(0).toUpperCase()+m.slice(1)
+}
+
+function setTool(t){
+  S.tool=t
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'))
+  el('t-'+t)?.classList.add('on')
+  el('vbadge').textContent=S.mode.charAt(0).toUpperCase()+S.mode.slice(1)+' Mode — '+t
+  el('si-tool').textContent=t
+}
+
+function setShade(s){
+  S.shading=s
+  document.querySelectorAll('.shadebtn').forEach(b=>b.classList.remove('on'))
+  el('sh-'+s)?.classList.add('on')
+  for(const id in threeObjs){
+    const m=threeObjs[id]
+    if(m?.isMesh&&m.userData.id){
+      m.material.dispose()
+      const obj=S.objs.find(o=>o.id===m.userData.id)
+      if(obj)m.material=mkMat(obj)
+    }
+  }
+  closeMenus()
+}
+
+// ── PANELS SECTION TOGGLE ──
+function mkSection(title,id,content,open=true){
+  return `<div class="psec-head" onclick="toggleSec('${id}')">
+    <span class="psec-title">${title}</span>
+    <span class="psec-arr ${open?'open':'closed'}" id="arr-${id}">${open?'▼':'▶'}</span>
+  </div>
+  <div class="psec-body ${open?'open':'closed'}" id="sec-${id}">${content}</div>`
+}
+
+function toggleSec(id){
+  const body=el('sec-'+id), arr=el('arr-'+id)
+  if(!body)return
+  const isOpen=body.classList.contains('open')
+  body.classList.toggle('open',!isOpen)
+  body.classList.toggle('closed',isOpen)
+  arr.classList.toggle('open',!isOpen)
+  arr.classList.toggle('closed',isOpen)
+  arr.textContent=isOpen?'▶':'▼'
+}
+
+// ── OUTLINER ──
+function renderOutliner(){
+  const filter=el('ofilter')?.value?.toLowerCase()||''
+  const list=el('olist'); if(!list)return
+  list.innerHTML=''
+  const icons={mesh:'⬛',light:'💡',camera:'📷',armature:'🦴',bone:'🦴',empty:'◇'}
+  S.objs.filter(o=>o.name.toLowerCase().includes(filter)).forEach(obj=>{
+    const sel=S.selIds.includes(obj.id)
+    const d=document.createElement('div')
+    d.className='oitem'+(sel?' sel':'')
+    d.innerHTML=`<button class="ovis" onclick="event.stopPropagation();toggleVis('${obj.id}')">${obj.vis?'👁':'🚫'}</button><span class="otype">${icons[obj.type]||'◇'}</span><span class="oname${sel?' sel':''}" ondblclick="renObj('${obj.id}')">${obj.name}</span><span class="obadge">${obj.type}</span>`
+    d.onclick=e=>{
+      if(e.shiftKey) S.selIds.includes(obj.id)?S.selIds=S.selIds.filter(i=>i!==obj.id):S.selIds.push(obj.id)
+      else S.selIds=[obj.id]
+      refreshUI()
+    }
+    list.appendChild(d)
+  })
+}
+
+function toggleVis(id){const o=S.objs.find(x=>x.id===id);if(o){o.vis=!o.vis;renderOutliner()}}
+function renObj(id){const o=S.objs.find(x=>x.id===id);if(!o)return;const n=prompt('Rename:',o.name);if(n?.trim()){o.name=n.trim();refreshUI()}}
+
+// ── PROPERTIES ──
+function renderProps(){
+  const obj=S.objs.find(o=>S.selIds.includes(o.id))
+  el('props-empty').style.display=obj?'none':'flex'
+  el('props-main').style.display=obj?'block':'none'
+  if(!obj)return
+  const mat=S.mats.find(m=>m.id===obj.matId)
+  const id=obj.id
+
+  const transformHTML=`
+    <div class="v3row"><div class="v3lbl">Location</div><div class="v3i">
+      <input class="vx" type="number" step="0.1" value="${obj.pos[0].toFixed(3)}" onchange="GO('${id}').pos[0]=+this.value">
+      <input class="vy" type="number" step="0.1" value="${obj.pos[1].toFixed(3)}" onchange="GO('${id}').pos[1]=+this.value">
+      <input class="vz" type="number" step="0.1" value="${obj.pos[2].toFixed(3)}" onchange="GO('${id}').pos[2]=+this.value">
+    </div></div>
+    <div class="v3row"><div class="v3lbl">Rotation</div><div class="v3i">
+      <input class="vx" type="number" step="0.01" value="${obj.rot[0].toFixed(3)}" onchange="GO('${id}').rot[0]=+this.value">
+      <input class="vy" type="number" step="0.01" value="${obj.rot[1].toFixed(3)}" onchange="GO('${id}').rot[1]=+this.value">
+      <input class="vz" type="number" step="0.01" value="${obj.rot[2].toFixed(3)}" onchange="GO('${id}').rot[2]=+this.value">
+    </div></div>
+    <div class="v3row"><div class="v3lbl">Scale</div><div class="v3i">
+      <input class="vx" type="number" step="0.01" value="${obj.scl[0].toFixed(3)}" onchange="GO('${id}').scl[0]=+this.value||.001">
+      <input class="vy" type="number" step="0.01" value="${obj.scl[1].toFixed(3)}" onchange="GO('${id}').scl[1]=+this.value||.001">
+      <input class="vz" type="number" step="0.01" value="${obj.scl[2].toFixed(3)}" onchange="GO('${id}').scl[2]=+this.value||.001">
+    </div></div>
+    <div class="prow" style="gap:3px;padding-bottom:4px">
+      <button class="rbtn" onclick="GO('${id}').pos=[0,0,0];renderProps()">Reset Pos</button>
+      <button class="rbtn" onclick="GO('${id}').rot=[0,0,0];renderProps()">Reset Rot</button>
+      <button class="rbtn" onclick="GO('${id}').scl=[1,1,1];renderProps()">Reset Scl</button>
+    </div>`
+
+  const objHTML=`
+    <div class="prow"><label style="display:flex;align-items:center;gap:6px;font-size:10px;color:#777;cursor:pointer"><input type="checkbox" ${obj.vis?'checked':''} onchange="GO('${id}').vis=this.checked" style="accent-color:#e8780a">Visible</label></div>
+    <div class="prow"><label style="display:flex;align-items:center;gap:6px;font-size:10px;color:#777;cursor:pointer"><input type="checkbox" checked style="accent-color:#e8780a">Cast Shadow</label></div>
+    <div class="prow"><label style="display:flex;align-items:center;gap:6px;font-size:10px;color:#777;cursor:pointer"><input type="checkbox" checked style="accent-color:#e8780a">Receive Shadow</label></div>`
+
+  let matHTML='<div class="prow"><button onclick="addMat()" style="flex:1;background:#e8780a;border:none;border-radius:4px;padding:5px;color:#fff;font-size:10px;font-weight:700">+ Add Material</button></div>'
+  if(mat){
+    matHTML=`
+      <div class="prow"><span class="plbl">Name</span><input class="pinp" value="${mat.name}" onchange="GM('${mat.id}').name=this.value"></div>
+      <div class="crow"><span class="plbl" style="font-size:10px;color:#555">Color</span>
+        <input type="color" value="${mat.color||'#4a90d9'}" class="cswatch" oninput="GM('${mat.id}').color=this.value;el('chx-${mat.id}').value=this.value;rebMat('${id}')">
+        <input id="chx-${mat.id}" class="chex" value="${mat.color||'#4a90d9'}" onchange="GM('${mat.id}').color=this.value;rebMat('${id}')">
+      </div>
+      <div class="srow"><div class="srow-top"><span class="slbl">Metalness</span><span class="sval">${(mat.metalness||0).toFixed(2)}</span></div>
+        <input type="range" min="0" max="1" step="0.01" value="${mat.metalness||0}" class="sli" oninput="GM('${mat.id}').metalness=+this.value;this.previousElementSibling.lastChild.textContent=(+this.value).toFixed(2);rebMat('${id}')"></div>
+      <div class="srow"><div class="srow-top"><span class="slbl">Roughness</span><span class="sval">${(mat.roughness??0.7).toFixed(2)}</span></div>
+        <input type="range" min="0" max="1" step="0.01" value="${mat.roughness??0.7}" class="sli" oninput="GM('${mat.id}').roughness=+this.value;this.previousElementSibling.lastChild.textContent=(+this.value).toFixed(2);rebMat('${id}')"></div>
+      <div class="srow"><div class="srow-top"><span class="slbl">Emission</span><span class="sval">${(mat.emissive||0).toFixed(2)}</span></div>
+        <input type="range" min="0" max="2" step="0.01" value="${mat.emissive||0}" class="sli" oninput="GM('${mat.id}').emissive=+this.value;this.previousElementSibling.lastChild.textContent=(+this.value).toFixed(2)"></div>
+      <div class="prow"><label style="display:flex;align-items:center;gap:6px;font-size:10px;color:#777;cursor:pointer"><input type="checkbox" ${mat.wireframe?'checked':''} onchange="GM('${mat.id}').wireframe=this.checked;rebMat('${id}')" style="accent-color:#e8780a">Wireframe</label></div>
+      <div class="prow"><span class="plbl">Type</span><select class="pinp" onchange="GM('${mat.id}').type=this.value">
+        <option ${mat.type==='standard'?'selected':''}>standard</option>
+        <option ${mat.type==='toon'?'selected':''}>toon</option>
+        <option ${mat.type==='glass'?'selected':''}>glass</option>
+        <option ${mat.type==='emission'?'selected':''}>emission</option>
+      </select></div>
+      <div class="prow"><button onclick="addMat()" style="flex:1;background:#252525;border:1px solid #333;border-radius:4px;padding:3px;font-size:9px;color:#777">+ New Material</button></div>`
+  }
+
+  let lightHTML=''
+  if(obj.type==='light'){
+    lightHTML=mkSection('💡 Light','light',`
+      <div class="crow"><span class="plbl" style="font-size:10px;color:#555">Color</span>
+        <input type="color" value="${obj.color||'#fff'}" class="cswatch" onchange="GO('${id}').color=this.value">
+      </div>
+      <div class="srow"><div class="srow-top"><span class="slbl">Intensity</span><span class="sval">${(obj.intensity||1).toFixed(2)}</span></div>
+        <input type="range" min="0" max="5" step="0.05" value="${obj.intensity||1}" class="sli" oninput="GO('${id}').intensity=+this.value;this.previousElementSibling.lastChild.textContent=(+this.value).toFixed(2)"></div>`)
+  }
+
+  const renderHTML=`
+    <div class="prow"><span class="plbl">Samples</span><input class="pinp" value="128"></div>
+    <div class="prow"><span class="plbl">Res X</span><input class="pinp" value="1920"></div>
+    <div class="prow"><span class="plbl">Res Y</span><input class="pinp" value="1080"></div>
+    <div class="prow"><span class="plbl">Format</span><select class="pinp"><option>PNG</option><option>JPEG</option><option>EXR</option></select></div>
+    <div class="prow"><button style="flex:1;background:#e8780a;border:none;border-radius:4px;padding:5px;color:#fff;font-size:10px;font-weight:700">F12 Render</button></div>`
+
+  el('props-main').innerHTML=
+    `<div style="padding:7px 10px;border-bottom:1px solid #1a1a1a;background:#141414">
+      <div style="font-size:8px;color:#444;margin-bottom:3px;text-transform:uppercase;letter-spacing:1px">Object</div>
+      <input value="${obj.name}" onchange="GO('${id}').name=this.value;renderOutliner()" style="width:100%;background:#111;border:1px solid #222;border-radius:3px;padding:3px 7px;font-size:11px;color:#fff;outline:none">
+      <div style="margin-top:4px;display:flex;gap:3px">
+        <span style="font-size:8px;background:#e8780a22;color:#e8780a;padding:1px 6px;border-radius:3px;border:1px solid #e8780a33">${obj.type}</span>
+        ${obj.mesh?`<span style="font-size:8px;background:#4a90d922;color:#4a90d9;padding:1px 6px;border-radius:3px;border:1px solid #4a90d933">${obj.mesh}</span>`:''}
+      </div>
+    </div>`+
+    mkSection('⇥ Transform','transform',transformHTML,true)+
+    mkSection('◈ Object','objprops',objHTML,true)+
+    (obj.type==='mesh'?mkSection('● Material','material',matHTML,true):'')+
+    lightHTML+
+    mkSection('★ Render','render',renderHTML,false)
+}
+
+function GO(id){return S.objs.find(o=>o.id===id)||{}}
+function GM(id){return S.mats.find(m=>m.id===id)||{}}
+function addMat(){
+  const id='m'+(++S.nid)
+  S.mats.push({id,name:'Material.'+String(S.mats.length+1).padStart(3,'0'),color:'#888888',metalness:0,roughness:.5,wireframe:false,emissive:0})
+  const obj=S.objs.find(o=>S.selIds.includes(o.id));if(obj)obj.matId=id
+  renderProps()
+}
+function rebMat(objId){
+  const m=threeObjs[objId]
+  if(m?.isMesh){const obj=S.objs.find(o=>o.id===objId);if(obj){m.material.dispose();m.material=mkMat(obj)}}
+}
+
+// ── TABS ──
+function switchTab(t){
+  ['v','s','sc'].forEach(x=>{
+    el('ctab-'+x).classList.toggle('on',x===t)
+    const tab=el('tab-'+x); if(tab) tab.style.display=x===t?'flex':'none'
+    if(x==='v'){const tab=el('tab-v');if(tab)tab.style.display=x===t?'block':'none'}
+  })
+  if(t==='s') renderSNodes()
+}
+function switchRTab(t){
+  ['o','p'].forEach(x=>{
+    el('rtab-'+x).classList.toggle('on',x===t)
+    el('rc-'+x).style.display=x===t?'block':'none'
+  })
+}
+
+// ── MENUS ──
+function toggleMenu(id){
+  const d=el(id); const was=d.classList.contains('show')
+  closeMenus(); if(!was){d.classList.add('show');d.previousElementSibling.classList.add('open')}
+}
+function closeMenus(){
+  document.querySelectorAll('.tm-drop').forEach(d=>d.classList.remove('show'))
+  document.querySelectorAll('.tm-btn').forEach(b=>b.classList.remove('open'))
+  el('addmenu').style.display='none'
+  el('nodemenu').style.display='none'
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.tm-item')&&!e.target.closest('#addmenu'))closeMenus()})
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeMenus();closeModal('mshortcuts');closeModal('mabout')}
+})
+
+function toggleAddMenu(){
+  const p=el('addmenu')
+  if(p.style.display==='none'){
+    p.style.display='block'
+    const btn=p.previousElementSibling.getBoundingClientRect()
+    p.style.left=(btn.right+6)+'px'
+    p.style.bottom='30px'
+    p.style.position='fixed'
+    if(!p.children.length){
+      [['cube','⬛ Cube'],['sphere','⚫ Sphere'],['cylinder','🔵 Cylinder'],['plane','▬ Plane'],['cone','▲ Cone'],['torus','◎ Torus'],['icosphere','💎 Icosphere'],['monkey','🐵 Suzanne'],null,['light','💡 Light'],['camera','📷 Camera'],['bone','🦴 Armature'],['empty','◇ Empty']].forEach(item=>{
+        if(!item){const s=document.createElement('div');s.style.cssText='height:1px;background:#2a2a2a;margin:2px 0';p.appendChild(s);return}
+        const b=document.createElement('button');b.className='ssnip';b.textContent=item[1];b.onclick=()=>addO(item[0]);p.appendChild(b)
+      })
+    }
+  } else p.style.display='none'
+}
+
+// Mobile panel toggle
+function toggleMobilePanel(side){
+  if(side==='left'){
+    el('ltoolbar').classList.toggle('mobile-open')
+    el('ltoolbar').classList.toggle('collapsed',false)
+  } else {
+    el('rpanel').classList.toggle('mobile-open')
+    el('rpanel').classList.toggle('collapsed',false)
+  }
+}
+
+// ── ANIMATION ──
+function togglePlay(){
+  S.playing=!S.playing
+  el('playbtn').textContent=S.playing?'⏸':'▶'
+  el('playbtn').classList.toggle('on',S.playing)
+  if(S.playing) playIval=setInterval(()=>{S.curFr=(S.curFr+1)%S.totalFr;el('frinp').value=S.curFr;updatePH()},1000/S.fps)
+  else clearInterval(playIval)
+}
+function stepFr(d){setFr(Math.max(0,Math.min(S.totalFr,S.curFr+d)))}
+function setFr(f){S.curFr=Math.max(0,Math.min(S.totalFr,f));el('frinp').value=S.curFr;updatePH()}
+function scrubTL(e){const r=el('ttracks').getBoundingClientRect();setFr(Math.round(((e.clientX-r.left)/r.width)*S.totalFr))}
+function updatePH(){const pct=(S.curFr/S.totalFr*100)+'%';const p=el('tphline');if(p)p.style.left=pct}
+function insKF(prop){
+  const obj=S.objs.find(o=>S.selIds.includes(o.id));if(!obj)return
+  const props=prop==='all'?['location','rotation','scale']:[prop]
+  props.forEach(p=>{
+    const k=obj.id+':'+p; if(!S.kfs[k])S.kfs[k]=[]
+    const v=p==='location'?[...obj.pos]:p==='rotation'?[...obj.rot]:[...obj.scl]
+    S.kfs[k]=S.kfs[k].filter(x=>x.frame!==S.curFr)
+    S.kfs[k].push({frame:S.curFr,value:v}); S.kfs[k].sort((a,b)=>a.frame-b.frame)
+  })
+  renderKFs()
+  slog(`Keyframe inserted @ frame ${S.curFr} (${prop})`,'ok')
+}
+function renderKFs(){
+  const obj=S.objs.find(o=>S.selIds.includes(o.id))
+  const map={lx:'location',ly:'location',lz:'location',rx:'rotation',ry:'rotation',rz:'rotation',sx:'scale',sy:'scale',sz:'scale'}
+  Object.entries(map).forEach(([ch,prop])=>{
+    const t=el('tr-'+ch);if(!t)return;t.innerHTML=''
+    if(!obj)return
+    ;(S.kfs[obj.id+':'+prop]||[]).forEach(kf=>{
+      const d=document.createElement('div');d.className='tkf'
+      d.style.left=(kf.frame/S.totalFr*100)+'%';d.title='Frame '+kf.frame;t.appendChild(d)
+    })
+  })
+}
+function buildRuler(){
+  const r=el('truler');if(!r)return;r.innerHTML=''
+  for(let i=0;i<=S.totalFr;i+=10){const t=document.createElement('div');t.className='ttick';t.style.left=(i/S.totalFr*100)+'%';t.textContent=i;r.appendChild(t)}
+  const ph=document.createElement('div');ph.className='tph';ph.id='tph';ph.style.height='20px';ph.innerHTML='';r.appendChild(ph)
+}
+
+// ── SHADER EDITOR ──
+const NDEFS={
+  output:    {label:'Material Output',color:'#141e14',inputs:['Surface','Volume'],outputs:[]},
+  principled:{label:'Principled BSDF', color:'#0e1520',inputs:['Base Color','Metallic','Roughness','Emission','Alpha'],outputs:['BSDF']},
+  diffuse:   {label:'Diffuse BSDF',    color:'#0e1520',inputs:['Color','Roughness'],outputs:['BSDF']},
+  glossy:    {label:'Glossy BSDF',     color:'#0e1520',inputs:['Color','Roughness'],outputs:['BSDF']},
+  emission:  {label:'Emission',         color:'#1e1408',inputs:['Color','Strength'],outputs:['Emission']},
+  mix:       {label:'Mix Shader',       color:'#161616',inputs:['Fac','Shader 1','Shader 2'],outputs:['Shader']},
+  color:     {label:'RGB Color',        color:'#140e20',inputs:[],outputs:['Color']},
+  noise:     {label:'Noise Texture',    color:'#0e1616',inputs:['Scale','Detail'],outputs:['Color','Fac']},
+  fresnel:   {label:'Fresnel',          color:'#0e1614',inputs:['IOR'],outputs:['Fac']},
+}
+const SH={nodes:[],conns:[],sel:null,nid:100}
+
+function initSH(){
+  SH.nodes=[{id:'sn1',type:'output',x:460,y:130},{id:'sn2',type:'principled',x:180,y:60}]
+  SH.conns=[{from:'sn2',fSlot:'BSDF',to:'sn1',tSlot:'Surface'}]
+}
+
+function renderSNodes(){
+  const cont=el('shnodes'),svg=el('shsvg');if(!cont)return
+  cont.innerHTML='';svg.innerHTML=''
+  SH.nodes.forEach(node=>{
+    const def=NDEFS[node.type];if(!def)return
+    const sel=SH.sel===node.id
+    const c=document.createElement('div')
+    c.className='ncard'+(sel?' sel':'')
+    c.style.cssText=`left:${node.x}px;top:${node.y}px;background:${def.color};z-index:${sel?10:5}`
+    c.innerHTML=`<div class="nhead" style="background:${def.color}80"><div class="ndot"></div><div class="ntitle">${def.label}</div></div>`+
+      def.inputs.map(inp=>`<div class="nslot ni"><div class="nsock ins"></div>${inp}${inp==='Base Color'?`<input type="color" value="#4a90d9" onclick="event.stopPropagation()" style="margin-left:auto;width:18px;height:13px;border:none;border-radius:2px;cursor:pointer">`:''}${inp==='Metallic'||inp==='Roughness'||inp==='Strength'||inp==='Fac'?`<input type="range" min="0" max="1" step="0.01" value="0.5" onclick="event.stopPropagation()" style="margin-left:auto;width:48px;accent-color:#e8780a">`:''}${inp==='Scale'||inp==='Detail'?`<input type="range" min="0" max="10" step="0.1" value="1" onclick="event.stopPropagation()" style="margin-left:auto;width:48px;accent-color:#e8780a">`:''}${inp==='IOR'?`<input type="number" value="1.45" step="0.01" onclick="event.stopPropagation()" style="margin-left:auto;width:40px;background:#111;border:1px solid #222;border-radius:2px;color:#ccc;font-size:9px;text-align:center;outline:none">`:''}${inp==='Alpha'?`<input type="range" min="0" max="1" step="0.01" value="1" onclick="event.stopPropagation()" style="margin-left:auto;width:48px;accent-color:#e8780a">`:''}</div>`).join('')+
+      def.outputs.map(out=>`<div class="nslot no">${out}<div class="nsock outs"></div></div>`).join('')+
+      '<div style="height:3px"></div>'
+    c.addEventListener('mousedown',e=>{e.stopPropagation();SH.sel=node.id;nodeDrag(node,e)})
+    c.addEventListener('touchstart',e=>{e.stopPropagation();SH.sel=node.id;nodeTouchDrag(node,e)},{passive:false})
+    c.addEventListener('click',e=>{e.stopPropagation();SH.sel=node.id;renderSNodes()})
+    cont.appendChild(c)
+  })
+  // SVG connections
+  SH.conns.forEach(conn=>{
+    const fn=SH.nodes.find(n=>n.id===conn.from),tn=SH.nodes.find(n=>n.id===conn.to)
+    if(!fn||!tn)return
+    const fd=NDEFS[fn.type],td=NDEFS[tn.type]
+    const fi=fd.outputs.indexOf(conn.fSlot),ti=td.inputs.indexOf(conn.tSlot)
+    const x1=fn.x+180,y1=fn.y+32+fi*20+10,x2=tn.x,y2=tn.y+32+ti*20+10,cx=(x1+x2)/2
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path')
+    path.setAttribute('d',`M ${x1} ${y1} C ${cx} ${y1} ${cx} ${y2} ${x2} ${y2}`)
+    path.setAttribute('stroke','#e8780a');path.setAttribute('stroke-width','2');path.setAttribute('fill','none');path.setAttribute('stroke-opacity','.8')
+    svg.appendChild(path)
+  })
+  const b=el('sh-matbadge')
+  if(b){const obj=S.objs.find(o=>S.selIds.includes(o.id));const mat=obj?S.mats.find(m=>m.id===obj.matId):null;b.textContent=mat?'Material: '+mat.name:'No material selected'}
+}
+
+function nodeDrag(node,e){
+  const sx=e.clientX-node.x,sy=e.clientY-node.y
+  const mm=me=>{node.x=me.clientX-sx;node.y=me.clientY-sy;renderSNodes()}
+  const mu=()=>{document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu)}
+  document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu)
+}
+function nodeTouchDrag(node,e){
+  const t=e.touches[0],sx=t.clientX-node.x,sy=t.clientY-node.y
+  const mm=me=>{const tt=me.touches[0];node.x=tt.clientX-sx;node.y=tt.clientY-sy;renderSNodes()}
+  const mu=()=>{document.removeEventListener('touchmove',mm);document.removeEventListener('touchend',mu)}
+  document.addEventListener('touchmove',mm,{passive:false});document.addEventListener('touchend',mu)
+}
+function addSNode(type){
+  const id='sn'+(++SH.nid); SH.nodes.push({id,type,x:120+Math.random()*180,y:80+Math.random()*120})
+  const def=NDEFS[type],out=SH.nodes.find(n=>n.type==='output')
+  if(def?.outputs.includes('BSDF')&&out) SH.conns.push({from:id,fSlot:'BSDF',to:out.id,tSlot:'Surface'})
+  else if(def?.outputs.includes('Emission')&&out) SH.conns.push({from:id,fSlot:'Emission',to:out.id,tSlot:'Surface'})
+  el('nodemenu').style.display='none'; renderSNodes()
+}
+function delSelNode(){
+  if(!SH.sel)return
+  if(SH.nodes.find(n=>n.id===SH.sel)?.type==='output'){alert("Can't delete Output node.");return}
+  SH.nodes=SH.nodes.filter(n=>n.id!==SH.sel)
+  SH.conns=SH.conns.filter(c=>c.from!==SH.sel&&c.to!==SH.sel)
+  SH.sel=null; renderSNodes()
+}
+function deselNode(){SH.sel=null;renderSNodes()}
+function toggleNodeMenu(){const m=el('nodemenu');m.style.display=m.style.display==='none'?'block':'none'}
+
+// ── SCRIPT EDITOR ──
+const SNIPS={
+  cube:`cube = f3d.ops.mesh.primitive_cube_add(\n    size=2, location=(0, 0, 0)\n)\nprint("Cube added!")`,
+  sphere:`sphere = f3d.ops.mesh.primitive_sphere_add(\n    radius=1, location=(3, 0, 0)\n)\nprint("Sphere added!")`,
+  selall:`f3d.ops.select_all(action='SELECT')\nprint("Selected: " + str(len(f3d.data.objects)))`,
+  anim:`obj = f3d.context.active_object\nobj.location = (0, 0, 0)\nobj.keyframe_insert(data_path="location", frame=1)\nobj.location = (0, 0, 3)\nobj.keyframe_insert(data_path="location", frame=60)\nprint("Keyframes set!")`,
+  mat:`mat = f3d.data.materials.new(name="PBR")\nmat.diffuse_color = (0.8, 0.3, 0.1, 1.0)\nmat.metallic = 0.3\nmat.roughness = 0.4\nprint("Material: " + mat.name)`,
+  list:`print("Objects in scene:")\nfor obj in f3d.data.objects:\n    print("  " + obj.name + " [" + obj.type + "]")`,
+  batch:`import math\nfor i in range(6):\n    a = i * (2 * math.pi / 6)\n    f3d.ops.mesh.primitive_cube_add(size=0.8, location=(math.cos(a)*4, math.sin(a)*4, 0))\nprint("Created 6 cubes!")`,
+}
+function insSnip(k){const ta=el('scta');if(ta&&SNIPS[k]){ta.value+='\n'+SNIPS[k];updateLnums()}}
+function updateLnums(){
+  const ta=el('scta'),ln=el('lnums');if(!ta||!ln)return
+  ln.innerHTML=ta.value.split('\n').map((_,i)=>`<div class="lnum">${i+1}</div>`).join('')
+}
+function scriptKey(e){
+  if(e.key==='Tab'){e.preventDefault();const ta=e.target,s=ta.selectionStart;ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;updateLnums()}
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runScript()}
+}
+function runScript(){
+  const code=el('scta').value, rb=el('runbtn')
+  rb.textContent='⏳ Running…'; rb.classList.add('busy')
+  slog(`\n>>> Running… (${new Date().toLocaleTimeString()})`,'cmd')
+  let ops=0
+  code.split('\n').forEach(line=>{
+    const t=line.trim()
+    if(t.startsWith('print(')){const m=t.match(/print\(["'`](.+?)["'`]\)/);if(m){slog('  '+m[1],'ok');ops++}else{slog('  [print]','ok');ops++}}
+    if(t.includes('primitive_cube_add')){addO('cube');slog('  ✓ Cube added','ok');ops++}
+    if(t.includes('primitive_sphere_add')){addO('sphere');slog('  ✓ Sphere added','ok');ops++}
+    if(t.includes('primitive_cylinder_add')){addO('cylinder');slog('  ✓ Cylinder added','ok');ops++}
+    if(t.includes('select_all')){C('selAll');slog('  ✓ All selected','ok');ops++}
+    if(t.includes('keyframe_insert')){insKF('all');slog('  ✓ Keyframe inserted','ok');ops++}
+    if(t.includes('materials.new')){addMat();slog('  ✓ Material created','ok');ops++}
+  })
+  setTimeout(()=>{slog(`>>> Done — ${ops} operations.`,'cmd');rb.textContent='▶ Run (Ctrl+Enter)';rb.classList.remove('busy');scrollCon()},350)
+}
+function slog(msg,type='inf'){const l=el('sconlog');if(!l)return;const d=document.createElement('div');d.className='slogline '+type;d.textContent=msg;l.appendChild(d);scrollCon()}
+function scrollCon(){const l=el('sconlog');if(l)l.scrollTop=l.scrollHeight}
+
+// ── MODALS ──
+function showModal(id){closeMenus();el(id).classList.add('show')}
+function closeModal(id){el(id).classList.remove('show')}
+
+// ── SAVE / LOAD ──
+function saveProj(){
+  const data={id:'p'+Date.now(),name:S.projName,savedAt:new Date().toISOString(),objs:S.objs,mats:S.mats,kfs:S.kfs,script:el('scta')?.value||''}
+  const all=loadAllProjs().filter(p=>p.name!==S.projName)
+  all.unshift(data); localStorage.setItem('forge3d_projs',JSON.stringify(all))
+  slog('Saved: '+S.projName,'ok'); renderProjList()
+}
+function loadAllProjs(){return JSON.parse(localStorage.getItem('forge3d_projs')||'[]')}
+function renderProjList(){
+  const el2=el('projlist');if(!el2)return
+  const ps=loadAllProjs()
+  if(!ps.length){el2.innerHTML='<div class="fempty"><div style="font-size:36px;margin-bottom:10px">📁</div><div style="font-size:14px;color:#2a2a2a;margin-bottom:6px">No saved projects yet</div><div style="font-size:12px;color:#222">Start modeling and save your work</div></div>';return}
+  el2.innerHTML=ps.map(p=>`<div class="pcard" onclick="loadProj('${p.id}')">
+    <div class="pcard-top"><div class="pcard-icon">🔷</div><div><div class="pcard-name">${p.name}</div><div class="pcard-meta">${new Date(p.savedAt).toLocaleDateString()} · ${p.objs?.length||0} objects</div></div></div>
+    <div class="pcard-btns">
+      <button class="pbtn-o" onclick="event.stopPropagation();loadProj('${p.id}')">Open</button>
+      <button class="pbtn-d" onclick="event.stopPropagation();delProj('${p.id}')">🗑</button>
+    </div></div>`).join('')
+}
+function loadProj(id){
+  const p=loadAllProjs().find(x=>x.id===id);if(!p)return
+  S.objs=p.objs||[];S.mats=p.mats||[];S.kfs=p.kfs||{};S.projName=p.name;S.selIds=[]
+  if(p.script){const ta=el('scta');if(ta)ta.value=p.script;updateLnums()}
+  openEditor()
+}
+function delProj(id){if(!confirm('Delete?'))return;const all=loadAllProjs().filter(p=>p.id!==id);localStorage.setItem('forge3d_projs',JSON.stringify(all));renderProjList()}
+function importProj(e){
+  const f=e.target.files[0];if(!f)return
+  const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.objs){S.objs=d.objs;S.mats=d.mats||[];S.kfs=d.kfs||{};S.projName=d.name||f.name.replace(/\.(f3d|json)$/,'');if(d.script){const ta=el('scta');if(ta)ta.value=d.script;updateLnums()}openEditor()}else alert('Invalid file.')}catch(err){alert('Error: '+err.message)}};r.readAsText(f)
+}
+
+// ── EXPORT ──
+function dl(content,name,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:mime}));a.download=name;a.click()}
+function expOBJ(){
+  let o=`# Forge3D OBJ\n# ${new Date().toISOString()}\n\n`,off=1
+  S.objs.filter(x=>x.type==='mesh').forEach(obj=>{
+    o+=`o ${obj.name}\n`
+    const v=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]
+    v.forEach(([x,y,z])=>o+=`v ${(x*obj.scl[0]+obj.pos[0]).toFixed(4)} ${(y*obj.scl[1]+obj.pos[1]).toFixed(4)} ${(z*obj.scl[2]+obj.pos[2]).toFixed(4)}\n`)
+    [[0,1,2,3],[4,5,6,7],[0,1,5,4],[2,3,7,6],[0,3,7,4],[1,2,6,5]].forEach(f=>o+=`f ${f.map(i=>i+off).join(' ')}\n`)
+    off+=8;o+='\n'
+  });dl(o,S.projName+'.obj','text/plain')
+}
+function expSTL(){
+  let s=`solid ${S.projName}\n`
+  S.objs.filter(x=>x.type==='mesh').forEach(obj=>{
+    const v=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]
+    [[0,1,2],[0,2,3],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[2,3,7],[2,7,6],[0,3,7],[0,7,4],[1,2,6],[1,6,5]].forEach(face=>{
+      s+=`  facet normal 0 0 1\n    outer loop\n`
+      face.forEach(i=>{const[x,y,z]=v[i];s+=`      vertex ${(x*obj.scl[0]+obj.pos[0]).toFixed(4)} ${(y*obj.scl[1]+obj.pos[1]).toFixed(4)} ${(z*obj.scl[2]+obj.pos[2]).toFixed(4)}\n`})
+      s+=`    endloop\n  endfacet\n`
+    })
+  });s+=`endsolid ${S.projName}\n`;dl(s,S.projName+'.stl','text/plain')
+}
+function expGLTF(){
+  const g={asset:{version:'2.0',generator:'Forge3D v1.0'},scene:0,scenes:[{name:'Scene',nodes:S.objs.filter(o=>o.type==='mesh').map((_,i)=>i)}],nodes:S.objs.filter(o=>o.type==='mesh').map(o=>({name:o.name,translation:o.pos,scale:o.scl})),materials:S.mats.map(m=>({name:m.name,pbrMetallicRoughness:{baseColorFactor:[...hRGB(m.color||'#4a90d9'),1],metallicFactor:m.metalness||0,roughnessFactor:m.roughness??0.7}}))}
+  dl(JSON.stringify(g,null,2),S.projName+'.gltf','model/gltf+json')
+}
+function expF3D(){dl(JSON.stringify({format:'forge3d',version:'1.0',exportedAt:new Date().toISOString(),name:S.projName,objs:S.objs,mats:S.mats,kfs:S.kfs,script:el('scta')?.value||''},null,2),S.projName+'.f3d','application/json')}
+function hRGB(hex){const h=hex.replace('#','');return[parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255]}
+
+// ── NAV ──
+function openEditor(){
+  el('home').style.display='none'
+  el('editor').style.display='flex'
+  if(!R){initThree();initSH();switchTab('v');switchRTab('o')}
+  refreshUI()
+}
+function goHome(){
+  el('editor').style.display='none'
+  el('home').style.display='flex'
+  renderProjList()
+}
+function newScene(){
+  initScene()
+  for(const id in threeObjs){const m=threeObjs[id];SC?.remove(m);if(m.geometry)m.geometry.dispose();if(m.material)m.material.dispose()}
+  threeObjs={}
+}
+function newSceneWith(mesh){newScene();const o=S.objs.find(x=>x.id==='o1');if(o)o.mesh=mesh}
+
+function switchHTab(t){
+  el('htab-r').classList.toggle('on',t==='r')
+  el('htab-l').classList.toggle('on',t==='l')
+  el('htab-r-body').style.display=t==='r'?'block':'none'
+  el('htab-l-body').style.display=t==='l'?'block':'none'
+}
+
+function refreshUI(){
+  renderOutliner(); renderProps(); renderKFs(); updatePH()
+  el('kfbtns').style.display=S.selIds.length?'flex':'none'
+}
+
+function el(id){return document.getElementById(id)}
+
+// ── BOOT ──
+initScene()
+renderProjList()
+updateLnums()
+setInterval(refreshUI,800)
+</script>
+</body>
+</html>
