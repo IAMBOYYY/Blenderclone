@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>FORGE3D v2.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#1a1a1a;font-family:'Segoe UI',system-ui,sans-serif;font-size:12px;color:#ccc;user-select:none;}
+#app{display:flex;flex-direction:column;width:100%;height:100%;}
+
+/* TOPBAR */
+#topbar{height:30px;background:#111;border-bottom:1px solid #000;display:flex;align-items:stretch;flex-shrink:0;z-index:300;position:relative;}
+.logo{display:flex;align-items:center;gap:5px;padding:0 10px;border-right:1px solid #222;flex-shrink:0;}
+.logo-sq{width:18px;height:18px;background:#e87d39;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;}
+.logo-name{font-weight:700;font-size:12px;color:#ddd;letter-spacing:1px;}
+.mitem{position:relative;display:flex;align-items:center;}
+.mbtn{height:100%;padding:0 10px;background:none;border:none;color:#bbb;cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;transition:background .1s;}
+.mbtn:hover,.mbtn.open{background:#2a2a2a;color:#fff;}
+.mdrop{display:none;position:fixed;top:30px;background:#252525;border:1px solid #3a3a3a;border-radius:5px;min-width:200px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,.85);padding:3px 0;}
+.mdrop.show{display:block;}
+.mdi{display:flex;justify-content:space-between;align-items:center;padding:6px 14px;cursor:pointer;font-size:12px;color:#bbb;transition:background .08s;}
+.mdi:hover{background:#3a6ea8;color:#fff;}
+.mdi .ks{color:#555;font-size:10px;}.mdi:hover .ks{color:#aaa;}
+.msep{height:1px;background:#333;margin:3px 0;}
+.msub{padding:3px 14px;color:#555;font-size:10px;}
+
+/* MODEBAR */
+#modebar{height:32px;background:#1e1e1e;border-bottom:1px solid #111;display:flex;align-items:center;padding:0 6px;gap:2px;flex-shrink:0;overflow:visible;}
+.modebtn{padding:3px 9px;background:#2a2a2a;border:1px solid #383838;border-radius:4px;color:#aaa;cursor:pointer;font-size:12px;font-family:inherit;transition:all .1s;white-space:nowrap;}
+.modebtn:hover{background:#333;color:#ddd;}.modebtn.on{background:#e87d39;border-color:#e87d39;color:#fff;}
+.msep2{width:1px;height:18px;background:#333;margin:0 4px;flex-shrink:0;}
+.shading-row{display:flex;gap:2px;margin-left:auto;}
+.shdbtn{width:26px;height:24px;background:#2a2a2a;border:1px solid #383838;border-radius:4px;cursor:pointer;color:#aaa;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .1s;}
+.shdbtn:hover{background:#333;color:#ddd;}.shdbtn.on{background:#3a6ea8;border-color:#4a80c0;color:#fff;}
+
+/* MAIN */
+#main{flex:1;display:flex;min-height:0;overflow:hidden;}
+
+/* LEFT TOOLBAR */
+#ltbar{width:38px;background:#1a1a1a;border-right:1px solid #111;display:flex;flex-direction:column;align-items:center;padding:3px 0;gap:1px;flex-shrink:0;overflow:hidden;}
+.tbtn{width:34px;height:32px;background:transparent;border:1px solid transparent;border-radius:4px;cursor:pointer;color:#888;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .1s;flex-shrink:0;}
+.tbtn:hover{background:#2a2a2a;color:#ccc;}.tbtn.on{background:#e87d39;color:#fff;border-color:#e87d39;}
+.tsep{width:30px;height:1px;background:#2a2a2a;margin:1px 0;flex-shrink:0;}
+
+/* VIEWPORT */
+#vparea{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;position:relative;}
+#vpwrap{flex:1;position:relative;overflow:hidden;min-height:0;background:#3d3d3d;}
+#c{display:block;width:100%;height:100%;touch-action:none;}
+#vbadge{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);padding:3px 14px;border-radius:20px;font-size:12px;color:#ddd;pointer-events:none;z-index:10;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis;}
+#vcorner{position:absolute;top:8px;right:8px;display:flex;gap:4px;z-index:10;}
+.vcbtn{width:28px;height:28px;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);border-radius:4px;cursor:pointer;color:#bbb;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.vcbtn:hover{background:rgba(255,255,255,.15);color:#fff;}
+#gizmo{position:absolute;bottom:12px;right:12px;width:68px;height:68px;z-index:10;pointer-events:none;}
+
+/* RIGHT PANEL */
+#rpanel{width:240px;background:#1e1e1e;border-left:1px solid #111;display:flex;flex-direction:column;flex-shrink:0;transition:width .15s;overflow:hidden;}
+#rpanel.hidden{width:0;}
+.rptabs{display:flex;background:#111;border-bottom:1px solid #111;flex-shrink:0;}
+.rptab{flex:1;padding:5px 2px;text-align:center;cursor:pointer;font-size:11px;color:#777;border-bottom:2px solid transparent;}
+.rptab.on{color:#ddd;border-bottom-color:#e87d39;}.rptab:hover{color:#bbb;}
+.rpbody{flex:1;overflow-y:auto;display:none;}.rpbody.on{display:block;}
+.olitem{display:flex;align-items:center;padding:5px 8px;gap:5px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03);transition:background .08s;}
+.olitem:hover{background:#2a2a2a;}.olitem.sel{background:#1f3d6e;}
+.eye{cursor:pointer;opacity:.5;font-size:11px;margin-left:auto;}.eye:hover{opacity:1;}
+.olbtns{display:flex;flex-wrap:wrap;gap:4px;padding:7px;border-top:1px solid #222;}
+.olbtn{padding:4px 8px;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:4px;color:#bbb;cursor:pointer;font-size:11px;font-family:inherit;}
+.olbtn:hover{background:#333;}.olbtn.red:hover{background:#7a1a1a;color:#f55;}
+.psec{border-bottom:1px solid #111;}
+.phdr{padding:5px 8px;background:#161616;cursor:pointer;font-size:11px;font-weight:600;color:#bbb;display:flex;align-items:center;gap:4px;}
+.phdr:hover{background:#1e1e1e;}
+.pbody{padding:7px;display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center;}
+.plbl{color:#777;font-size:11px;}
+.pinp{background:#111;border:1px solid #333;border-radius:3px;color:#ddd;padding:3px 5px;font-size:11px;width:100%;font-family:inherit;}
+.pinp:focus{outline:none;border-color:#e87d39;}.pinp[readonly]{opacity:.5;}
+.pxyz{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;}
+.pxyz .pinp{font-size:10px;padding:2px 4px;}
+.pxyzlbl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:1px;}
+.px{color:#e44;font-size:9px;}.py{color:#4e4;font-size:9px;}.pz{color:#55f;font-size:9px;}
+
+/* TIMELINE */
+#timeline{height:80px;background:#1a1a1a;border-top:1px solid #111;display:flex;flex-direction:column;flex-shrink:0;}
+#tlctrl{height:28px;display:flex;align-items:center;padding:0 6px;gap:2px;background:#161616;border-bottom:1px solid #111;flex-shrink:0;overflow-x:auto;}
+.tlbtn{width:24px;height:22px;background:#252525;border:1px solid #333;border-radius:3px;cursor:pointer;color:#888;font-size:12px;font-family:inherit;display:flex;align-items:center;justify-content:center;transition:all .1s;flex-shrink:0;}
+.tlbtn:hover{background:#333;color:#ddd;}.tlbtn.on{background:#e87d39;border-color:#e87d39;color:#fff;}
+.tlinp{width:44px;padding:2px 4px;background:#111;border:1px solid #333;border-radius:3px;color:#ddd;font-size:11px;text-align:center;font-family:inherit;flex-shrink:0;}
+.tlsep{width:1px;height:16px;background:#333;margin:0 3px;flex-shrink:0;}
+.tlkbtn{padding:2px 6px;background:#252525;border:1px solid #333;border-radius:3px;color:#888;font-size:11px;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.tlkbtn:hover{background:#333;color:#ddd;}
+#tltrack{flex:1;display:flex;min-height:0;overflow:hidden;}
+#tlchlbls{width:60px;background:#111;border-right:1px solid #222;display:flex;flex-direction:column;justify-content:space-around;padding:1px 4px;flex-shrink:0;}
+.tlchlbl{font-size:9px;}
+#tlcanvas{flex:1;display:block;cursor:crosshair;min-width:0;}
+
+/* STATUS */
+#statusbar{height:18px;background:#111;border-top:1px solid #000;display:flex;align-items:center;padding:0 8px;gap:10px;font-size:10px;flex-shrink:0;color:#555;}
+.stv{color:#e87d39;font-weight:700;}.stv2{color:#888;}
+
+/* CONTEXT MENU */
+#ctx{position:fixed;background:#252525;border:1px solid #3a3a3a;border-radius:5px;z-index:9999;display:none;box-shadow:0 8px 28px rgba(0,0,0,.85);padding:3px 0;min-width:160px;}
+#ctx.show{display:block;}
+.cxi{padding:6px 14px;cursor:pointer;font-size:12px;color:#bbb;display:flex;justify-content:space-between;}
+.cxi:hover{background:#3a6ea8;color:#fff;}
+
+/* TOAST */
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#ddd;padding:5px 16px;border-radius:20px;font-size:12px;z-index:9999;display:none;pointer-events:none;border:1px solid rgba(255,255,255,.1);white-space:nowrap;max-width:90%;text-overflow:ellipsis;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:#111;}::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+@media(max-width:480px){.logo-name{display:none;}#rpanel{width:210px;}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo"><div class="logo-sq">F</div><div class="logo-name">FORGE3D</div></div>
+  <div class="mitem"><button class="mbtn" id="mi0" onclick="openMenu(this,'md0')">File</button>
+    <div class="mdrop" id="md0">
+      <div class="mdi" onclick="act('newScene')">New Scene<span class="ks">Ctrl+N</span></div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="act('saveRender')">Render &amp; Save<span class="ks">F12</span></div>
+    </div></div>
+  <div class="mitem"><button class="mbtn" id="mi1" onclick="openMenu(this,'md1')">Edit</button>
+    <div class="mdrop" id="md1">
+      <div class="mdi" onclick="act('selAll')">Select All<span class="ks">A</span></div>
+      <div class="mdi" onclick="act('deselAll')">Deselect All</div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="act('dup')">Duplicate<span class="ks">Ctrl+D</span></div>
+      <div class="mdi" onclick="act('del')">Delete<span class="ks">Del</span></div>
+    </div></div>
+  <div class="mitem"><button class="mbtn" id="mi2" onclick="openMenu(this,'md2')">Add</button>
+    <div class="mdrop" id="md2">
+      <div class="msub">─ MESH ─</div>
+      <div class="mdi" onclick="addObj('cube')">▣ Cube</div>
+      <div class="mdi" onclick="addObj('sphere')">⬤ UV Sphere</div>
+      <div class="mdi" onclick="addObj('cylinder')">▬ Cylinder</div>
+      <div class="mdi" onclick="addObj('plane')">▭ Plane</div>
+      <div class="mdi" onclick="addObj('cone')">▲ Cone</div>
+      <div class="mdi" onclick="addObj('torus')">◎ Torus</div>
+      <div class="mdi" onclick="addObj('ico')">◇ Icosphere</div>
+      <div class="msep"></div>
+      <div class="msub">─ LIGHT ─</div>
+      <div class="mdi" onclick="addLight('point')">💡 Point Light</div>
+      <div class="mdi" onclick="addLight('sun')">☀ Sun Light</div>
+      <div class="mdi" onclick="addLight('spot')">🔦 Spot Light</div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="addCamera()">📷 Camera</div>
+    </div></div>
+  <div class="mitem"><button class="mbtn" id="mi3" onclick="openMenu(this,'md3')">Object</button>
+    <div class="mdrop" id="md3">
+      <div class="mdi" onclick="act('dup')">Duplicate</div>
+      <div class="mdi" onclick="act('del')">Delete</div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="act('resetLoc')">Reset Location</div>
+      <div class="mdi" onclick="act('resetRot')">Reset Rotation</div>
+      <div class="mdi" onclick="act('resetScale')">Reset Scale</div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="act('focus')">Focus Selected<span class="ks">.</span></div>
+    </div></div>
+  <div class="mitem"><button class="mbtn" id="mi4" onclick="openMenu(this,'md4')">Render</button>
+    <div class="mdrop" id="md4">
+      <div class="mdi" onclick="act('saveRender')">Render Image<span class="ks">F12</span></div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="setShading('solid')">Solid</div>
+      <div class="mdi" onclick="setShading('wire')">Wireframe</div>
+      <div class="mdi" onclick="setShading('mat')">Material Preview</div>
+    </div></div>
+  <div class="mitem"><button class="mbtn" id="mi5" onclick="openMenu(this,'md5')">Window</button>
+    <div class="mdrop" id="md5">
+      <div class="mdi" onclick="toggleRPanel()">Toggle Side Panel</div>
+      <div class="mdi" onclick="toggleTimeline()">Toggle Timeline</div>
+      <div class="msep"></div>
+      <div class="mdi" onclick="act('fullscreen')">Fullscreen<span class="ks">F11</span></div>
+    </div></div>
+  <div class="mitem"><button class="mbtn" id="mi6" onclick="openMenu(this,'md6')">Help</button>
+    <div class="mdrop" id="md6">
+      <div class="mdi" onclick="showHelp()">Shortcuts</div>
+      <div class="mdi" onclick="showAbout()">About</div>
+    </div></div>
+</div>
+
+<!-- MODE BAR -->
+<div id="modebar">
+  <button class="modebtn on" id="mb-object" onclick="setMode('object')">Object Mode</button>
+  <button class="modebtn" id="mb-edit"   onclick="setMode('edit')">Edit Mode</button>
+  <button class="modebtn" id="mb-sculpt" onclick="setMode('sculpt')">Sculpt</button>
+  <div class="msep2"></div>
+  <select id="pivotSel" style="padding:2px 5px;background:#2a2a2a;border:1px solid #383838;border-radius:4px;color:#aaa;font-size:11px;font-family:inherit;">
+    <option>Median Point</option><option>Individual Origins</option><option>Active Element</option>
+  </select>
+  <div class="shading-row">
+    <button class="shdbtn on" id="shd-solid" title="Solid" onclick="setShading('solid')">◼</button>
+    <button class="shdbtn" id="shd-wire" title="Wireframe" onclick="setShading('wire')">⬡</button>
+    <button class="shdbtn" id="shd-mat" title="Material" onclick="setShading('mat')">●</button>
+  </div>
+</div>
+
+<!-- MAIN ROW -->
+<div id="main">
+  <!-- LEFT TOOLBAR -->
+  <div id="ltbar">
+    <button class="tbtn on" id="t-select"   onclick="setTool('select')"   title="Select (W)">↖</button>
+    <button class="tbtn"    id="t-move"     onclick="setTool('move')"     title="Move (G)">✥</button>
+    <button class="tbtn"    id="t-rotate"   onclick="setTool('rotate')"   title="Rotate (R)">↻</button>
+    <button class="tbtn"    id="t-scale"    onclick="setTool('scale')"    title="Scale (S)">⤡</button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="act('focus')"       title="Focus (.)">◎</button>
+    <button class="tbtn" onclick="act('viewAll')"     title="View All">⊟</button>
+    <button class="tbtn" onclick="act('toggleOrtho')" title="Ortho/Persp (5)">📐</button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="setView('front')" title="Front (1)">①</button>
+    <button class="tbtn" onclick="setView('side')"  title="Side (3)">③</button>
+    <button class="tbtn" onclick="setView('top')"   title="Top (7)">⑦</button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="addObj('cube')"   title="Add Cube">▣</button>
+    <button class="tbtn" onclick="act('del')"       title="Delete" style="color:#c55;">✕</button>
+  </div>
+
+  <!-- VIEWPORT -->
+  <div id="vparea">
+    <div id="vpwrap">
+      <canvas id="c"></canvas>
+      <div id="vbadge">Object Mode — Select</div>
+      <div id="vcorner">
+        <button class="vcbtn" onclick="act('focus')"       title="Focus">◎</button>
+        <button class="vcbtn" onclick="act('toggleOrtho')" title="Ortho/Persp">📐</button>
+        <button class="vcbtn" onclick="toggleRPanel()"     title="Panel">▶</button>
+      </div>
+      <canvas id="gizmo" width="68" height="68"></canvas>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="rpanel">
+    <div class="rptabs">
+      <div class="rptab on"  id="rt-out"   onclick="setRTab('out')">Outliner</div>
+      <div class="rptab"     id="rt-props" onclick="setRTab('props')">Properties</div>
+    </div>
+    <div class="rpbody on" id="rb-out">
+      <div style="padding:5px;border-bottom:1px solid #111;">
+        <input type="text" id="olsearch" placeholder="🔍 Filter..."
+          style="width:100%;padding:3px 7px;background:#111;border:1px solid #333;border-radius:4px;color:#ddd;font-size:11px;font-family:inherit;"
+          oninput="filterOL(this.value)">
+      </div>
+      <div id="ollist"></div>
+      <div class="olbtns">
+        <button class="olbtn" onclick="addObj('cube')">+Cube</button>
+        <button class="olbtn" onclick="addObj('sphere')">+Sphere</button>
+        <button class="olbtn" onclick="addObj('plane')">+Plane</button>
+        <button class="olbtn" onclick="addLight('point')">+Light</button>
+        <button class="olbtn red" onclick="act('del')">🗑 Del</button>
+      </div>
+    </div>
+    <div class="rpbody" id="rb-props">
+      <div id="pno" style="padding:20px;color:#555;text-align:center;">No object selected</div>
+      <div id="pbody" style="display:none;">
+        <div class="psec">
+          <div class="phdr" onclick="toggleSec('s-obj')">▾ Object Data</div>
+          <div class="pbody" id="s-obj">
+            <div class="plbl">Name</div><input class="pinp" id="pName" oninput="setProp('name',this.value)">
+            <div class="plbl">Type</div><input class="pinp" id="pType" readonly>
+          </div>
+        </div>
+        <div class="psec">
+          <div class="phdr" onclick="toggleSec('s-tr')">▾ Transform</div>
+          <div class="pbody" id="s-tr">
+            <div class="plbl">Location</div>
+            <div><div class="pxyzlbl"><span class="px">X</span><span class="py">Y</span><span class="pz">Z</span></div>
+              <div class="pxyz">
+                <input class="pinp" id="pLX" type="number" step="0.1" oninput="setProp('lx',+this.value)">
+                <input class="pinp" id="pLY" type="number" step="0.1" oninput="setProp('ly',+this.value)">
+                <input class="pinp" id="pLZ" type="number" step="0.1" oninput="setProp('lz',+this.value)">
+              </div></div>
+            <div class="plbl">Rotation°</div>
+            <div><div class="pxyzlbl"><span class="px">X</span><span class="py">Y</span><span class="pz">Z</span></div>
+              <div class="pxyz">
+                <input class="pinp" id="pRX" type="number" step="1" oninput="setProp('rx',+this.value)">
+                <input class="pinp" id="pRY" type="number" step="1" oninput="setProp('ry',+this.value)">
+                <input class="pinp" id="pRZ" type="number" step="1" oninput="setProp('rz',+this.value)">
+              </div></div>
+            <div class="plbl">Scale</div>
+            <div><div class="pxyzlbl"><span class="px">X</span><span class="py">Y</span><span class="pz">Z</span></div>
+              <div class="pxyz">
+                <input class="pinp" id="pSX" type="number" step="0.1" oninput="setProp('sx',+this.value)">
+                <input class="pinp" id="pSY" type="number" step="0.1" oninput="setProp('sy',+this.value)">
+                <input class="pinp" id="pSZ" type="number" step="0.1" oninput="setProp('sz',+this.value)">
+              </div></div>
+          </div>
+        </div>
+        <div class="psec" id="s-mat-wrap">
+          <div class="phdr" onclick="toggleSec('s-mat')">▾ Material</div>
+          <div class="pbody" id="s-mat">
+            <div class="plbl">Color</div><input class="pinp" id="pColor" type="color" style="padding:1px 2px;height:24px;" oninput="setProp('color',this.value)">
+            <div class="plbl">Metallic</div><input class="pinp" id="pMetal" type="range" min="0" max="1" step="0.01" style="padding:4px 0;" oninput="setProp('metal',+this.value)">
+            <div class="plbl">Roughness</div><input class="pinp" id="pRough" type="range" min="0" max="1" step="0.01" style="padding:4px 0;" oninput="setProp('rough',+this.value)">
+            <div class="plbl">Emission</div><input class="pinp" id="pEmit" type="range" min="0" max="3" step="0.01" style="padding:4px 0;" oninput="setProp('emit',+this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<div id="timeline">
+  <div id="tlctrl">
+    <button class="tlbtn" onclick="tlAct('first')">⏮</button>
+    <button class="tlbtn" onclick="tlAct('back')">⏪</button>
+    <button class="tlbtn" id="tlplay" onclick="tlAct('play')">▶</button>
+    <button class="tlbtn" onclick="tlAct('fwd')">⏩</button>
+    <button class="tlbtn" onclick="tlAct('last')">⏭</button>
+    <div class="tlsep"></div>
+    <input class="tlinp" id="tlframe" type="number" min="1" max="250" value="1" oninput="setFrame(+this.value)">
+    <span style="color:#444;padding:0 2px;flex-shrink:0;">/</span>
+    <input class="tlinp" id="tlend" type="number" min="1" value="250">
+    <div class="tlsep"></div>
+    <select id="tlFPS" style="padding:2px 4px;background:#252525;border:1px solid #333;border-radius:3px;color:#888;font-size:11px;font-family:inherit;flex-shrink:0;" onchange="FR_FPS=+this.value">
+      <option>12</option><option>24</option><option selected>25</option><option>30</option><option>60</option>
+    </select>
+    <span style="color:#555;font-size:10px;margin-left:2px;flex-shrink:0;">FPS</span>
+    <div class="tlsep"></div>
+    <button class="tlkbtn" onclick="insertKF('loc')">Loc</button>
+    <button class="tlkbtn" onclick="insertKF('rot')">Rot</button>
+    <button class="tlkbtn" onclick="insertKF('scl')">Scl</button>
+    <button class="tlkbtn" onclick="insertKF('all')">All</button>
+    <span style="margin-left:auto;color:#444;font-size:10px;padding-right:4px;flex-shrink:0;white-space:nowrap;">I=Insert KF · Click=Set Frame · Drag diamond=Move KF</span>
+  </div>
+  <div id="tltrack">
+    <div id="tlchlbls">
+      <div class="tlchlbl" style="color:#e44;">Loc X</div>
+      <div class="tlchlbl" style="color:#4e4;">Loc Y</div>
+      <div class="tlchlbl" style="color:#66f;">Loc Z</div>
+      <div class="tlchlbl" style="color:#ea4;">Rot X</div>
+      <div class="tlchlbl" style="color:#4ea;">Rot Y</div>
+      <div class="tlchlbl" style="color:#a4e;">Rot Z</div>
+    </div>
+    <canvas id="tlcanvas"></canvas>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div id="statusbar">
+  <span class="stv">FORGE3D v2.0</span>
+  <span class="stv2">Mode: <b id="st-mode" style="color:#aaa;">Object</b></span>
+  <span class="stv2">Tool: <b id="st-tool" style="color:#aaa;">Select</b></span>
+  <span class="stv2">Objects: <b id="st-objs" style="color:#aaa;">0</b></span>
+  <span class="stv2">Sel: <b id="st-sel" style="color:#aaa;">0</b></span>
+  <span class="stv2">Verts: <b id="st-verts" style="color:#aaa;">0</b></span>
+  <span class="stv2">Tris: <b id="st-tris" style="color:#aaa;">0</b></span>
+  <span class="stv2" id="st-fps" style="margin-left:auto;">FPS: —</span>
+</div>
+
+</div><!-- #app -->
+
+<div id="ctx">
+  <div class="cxi" onclick="act('del')">Delete<span style="color:#555;font-size:10px">Del</span></div>
+  <div class="cxi" onclick="act('dup')">Duplicate<span style="color:#555;font-size:10px">Ctrl+D</span></div>
+  <div class="cxi" onclick="act('focus')">Focus Selected<span style="color:#555;font-size:10px">.</span></div>
+  <div style="height:1px;background:#333;margin:3px 0;"></div>
+  <div class="cxi" onclick="addObj('cube')">Add Cube</div>
+  <div class="cxi" onclick="addObj('sphere')">Add Sphere</div>
+  <div class="cxi" onclick="addLight('point')">Add Light</div>
+  <div style="height:1px;background:#333;margin:3px 0;"></div>
+  <div class="cxi" onclick="insertKF('all')">Insert Keyframe (All)</div>
+</div>
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+// ═══════════════════════════════════════════
+//  FORGE3D v2.0 — Engine
+// ═══════════════════════════════════════════
+const D2R=Math.PI/180, R2D=180/Math.PI;
+let SCENE,CAM,OCAM,RENDERER,RAYCASTER;
+let OBJS=[],SEL=null;
+let MODE='object',TOOL='select',SHADING='solid',ORTHO=false;
+let rPanelOpen=true,tlVisible=true;
+const ORB={theta:.6,phi:1.1,r:10,tx:0,ty:.5,tz:0};
+const PT={down:false,btn:-1,lx:0,ly:0,sx:0,sy:0,dragged:false};
+let FR=1,FR_END=250,FR_FPS=25,TL_PLAYING=false,TL_TIMER=null;
+let KF={};
+let fpslast=performance.now(),fpscount=0,fpsval=0;
+
+// ── INIT ── runs after DOM ready, canvas already in DOM
+window.addEventListener('DOMContentLoaded',()=>{
+  initThree();
+  buildScene();
+  setupPointer();
+  setupKeys();
+  setupTL();
+  refreshOL();refreshProps();refreshStatus();
+  loop();
+  toast('FORGE3D ready  ·  RMB=Orbit  ·  Scroll=Zoom  ·  Shift+RMB=Pan  ·  G/R/S=Transform',4500);
+});
+
+function initThree(){
+  const canvas=document.getElementById('c');
+  try{
+    RENDERER=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true,powerPreference:'high-performance'});
+  }catch(e){
+    RENDERER=new THREE.WebGLRenderer({canvas,antialias:false,preserveDrawingBuffer:true});
+  }
+  RENDERER.setPixelRatio(Math.min(devicePixelRatio,2));
+  RENDERER.shadowMap.enabled=true;
+  RENDERER.shadowMap.type=THREE.PCFSoftShadowMap;
+  RENDERER.outputEncoding=THREE.sRGBEncoding;
+  SCENE=new THREE.Scene();
+  SCENE.background=new THREE.Color(0x3c3c3c);
+  CAM=new THREE.PerspectiveCamera(50,1,.01,5000);
+  OCAM=new THREE.OrthographicCamera(-5,5,5,-5,.01,5000);
+  RAYCASTER=new THREE.Raycaster();
+  // ResizeObserver keeps canvas always correct size
+  new ResizeObserver(onResize).observe(document.getElementById('vpwrap'));
+  onResize();
+}
+
+function onResize(){
+  const wrap=document.getElementById('vpwrap');
+  const w=wrap.clientWidth,h=wrap.clientHeight;
+  if(!RENDERER||w<=0||h<=0)return;
+  RENDERER.setSize(w,h,false);
+  CAM.aspect=w/h;CAM.updateProjectionMatrix();
+  const half=ORB.r*.45;
+  OCAM.left=-half*(w/h);OCAM.right=half*(w/h);OCAM.top=half;OCAM.bottom=-half;
+  OCAM.updateProjectionMatrix();
+}
+
+function getCAM(){return ORTHO?OCAM:CAM;}
+
+function updateCam(){
+  const{theta,phi,r,tx,ty,tz}=ORB;
+  CAM.position.set(tx+r*Math.sin(phi)*Math.sin(theta),ty+r*Math.cos(phi),tz+r*Math.sin(phi)*Math.cos(theta));
+  CAM.lookAt(tx,ty,tz);
+  OCAM.position.copy(CAM.position).multiplyScalar(1.2);
+  OCAM.lookAt(tx,ty,tz);
+  drawGizmo();
+}
+
+function buildScene(){
+  SCENE.add(new THREE.AmbientLight(0xffffff,.4));
+  const sun=new THREE.DirectionalLight(0xffffff,1.1);
+  sun.position.set(6,12,5);sun.castShadow=true;
+  sun.shadow.mapSize.set(1024,1024);
+  sun.shadow.camera.near=.1;sun.shadow.camera.far=80;
+  sun.shadow.camera.left=-12;sun.shadow.camera.right=12;
+  sun.shadow.camera.top=12;sun.shadow.camera.bottom=-12;
+  SCENE.add(sun);
+  const fill=new THREE.DirectionalLight(0x8899ff,.25);fill.position.set(-6,3,-6);SCENE.add(fill);
+  SCENE.add(new THREE.GridHelper(24,24,0x555555,0x3a3a3a));
+  SCENE.add(new THREE.AxesHelper(2));
+  createMeshObj('cube','Cube');
+  const lo=createLightObj('point',false);if(lo)lo.mesh.position.set(4,5,3);
+  createCamObj();
+  updateCam();
+}
+
+function makeMat(){const m=new THREE.MeshStandardMaterial({color:0x888888,roughness:.75,metalness:.05});m._hex='#888888';m._m=.05;m._r=.75;m._e=0;return m;}
+
+function createMeshObj(type,name,pos){
+  let geo;const N=32;
+  switch(type){
+    case'cube':geo=new THREE.BoxGeometry(2,2,2,2,2,2);break;
+    case'sphere':geo=new THREE.SphereGeometry(1,N,N/2);break;
+    case'cylinder':geo=new THREE.CylinderGeometry(1,1,2,N);break;
+    case'plane':geo=new THREE.PlaneGeometry(2,2,4,4);geo.rotateX(-Math.PI/2);break;
+    case'cone':geo=new THREE.ConeGeometry(1,2,N);break;
+    case'torus':geo=new THREE.TorusGeometry(1,.35,16,N);break;
+    case'ico':geo=new THREE.IcosahedronGeometry(1,2);break;
+    default:geo=new THREE.BoxGeometry(1,1,1);
+  }
+  const mesh=new THREE.Mesh(geo,makeMat());
+  mesh.castShadow=mesh.receiveShadow=true;
+  if(pos)mesh.position.set(pos.x,pos.y,pos.z);
+  else mesh.position.set(0,type==='plane'?0:1,0);
+  SCENE.add(mesh);
+  const obj={mesh,light:null,name,type:'MESH',vis:true,kf:{}};
+  OBJS.push(obj);doSelect(obj);return obj;
+}
+
+function createLightObj(type,doSel=true){
+  let light,helper;
+  const nm=type.charAt(0).toUpperCase()+type.slice(1)+' Light';
+  switch(type){
+    case'sun':light=new THREE.DirectionalLight(0xfffaf0,1.5);helper=new THREE.DirectionalLightHelper(light,1);break;
+    case'spot':light=new THREE.SpotLight(0xfffaf0,2,20,Math.PI/5,.3);light.castShadow=true;helper=new THREE.SpotLightHelper(light);break;
+    default:light=new THREE.PointLight(0xfffaf0,1.5,20);light.castShadow=true;helper=new THREE.PointLightHelper(light,.45);
+  }
+  light.position.set((Math.random()-.5)*5,4+Math.random()*3,(Math.random()-.5)*5);
+  SCENE.add(light);
+  if(helper){helper.position.copy(light.position);SCENE.add(helper);}
+  const obj={mesh:helper||light,light,name:nm,type:'LIGHT',vis:true,kf:{}};
+  OBJS.push(obj);if(doSel)doSelect(obj);return obj;
+}
+
+function createCamObj(){
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(.6,.4,.7),new THREE.MeshBasicMaterial({color:0x8888ff,wireframe:true}));
+  mesh.position.set(7,5,7);SCENE.add(mesh);
+  const obj={mesh,light:null,name:'Camera',type:'CAMERA',vis:true,kf:{}};OBJS.push(obj);return obj;
+}
+
+// ── SELECTION ──
+function doSelect(obj){
+  if(SEL)clearHL(SEL);
+  SEL=obj;
+  if(obj&&obj.type==='MESH')addHL(obj);
+  refreshOL();refreshProps();refreshStatus();refreshBadge();
+}
+function clearAll(){if(SEL)clearHL(SEL);SEL=null;refreshOL();refreshProps();refreshStatus();refreshBadge();}
+function addHL(obj){
+  if(!obj.mesh.geometry)return;
+  const out=new THREE.Mesh(obj.mesh.geometry,new THREE.MeshBasicMaterial({color:0xff8800,side:THREE.BackSide}));
+  out.name='__hl';out.scale.setScalar(1.05);obj.mesh.add(out);
+  if(obj.mesh.material&&obj.mesh.material.emissive)obj.mesh.material.emissive.setHex(0x0a1a30);
+}
+function clearHL(obj){
+  if(!obj||!obj.mesh)return;
+  if(obj.mesh.material&&obj.mesh.material.emissive)obj.mesh.material.emissive.setHex(0);
+  const hl=obj.mesh.getObjectByName('__hl');if(hl)obj.mesh.remove(hl);
+}
+
+// ── POINTER ──
+function setupPointer(){
+  const canvas=document.getElementById('c');
+  canvas.addEventListener('mousedown',e=>{
+    PT.down=true;PT.btn=e.button;PT.dragged=false;
+    PT.lx=PT.sx=e.clientX;PT.ly=PT.sy=e.clientY;
+    if(e.button===1)e.preventDefault();
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!PT.down)return;
+    const dx=e.clientX-PT.lx,dy=e.clientY-PT.ly;
+    PT.lx=e.clientX;PT.ly=e.clientY;
+    if(Math.abs(e.clientX-PT.sx)+Math.abs(e.clientY-PT.sy)>3)PT.dragged=true;
+    // Orbit: RMB or Alt+LMB or MMB
+    if(PT.btn===2||(PT.btn===0&&e.altKey)||(PT.btn===1)){
+      if(e.shiftKey||PT.btn===1){doPan(dx,dy);}
+      else{ORB.theta-=dx*.008;ORB.phi=clamp(ORB.phi+dy*.008,.05,Math.PI-.05);updateCam();}
+    }
+    // Transform: LMB drag with tool active
+    if(PT.btn===0&&!e.altKey&&(TOOL==='move'||TOOL==='rotate'||TOOL==='scale')&&SEL&&SEL.type==='MESH'){
+      applyDrag(dx,dy);
+    }
+  });
+  window.addEventListener('mouseup',e=>{
+    if(!PT.dragged&&e.button===0)clickSelect(e.clientX,e.clientY,e.shiftKey);
+    PT.down=false;PT.btn=-1;PT.dragged=false;
+  });
+  canvas.addEventListener('wheel',e=>{
+    e.preventDefault();
+    ORB.r=clamp(ORB.r*(e.deltaY>0?1.13:.88),.3,2000);
+    updateCam();onResize();
+  },{passive:false});
+  canvas.addEventListener('contextmenu',e=>{
+    e.preventDefault();
+    const ctx=document.getElementById('ctx');
+    ctx.style.left=Math.min(e.clientX,innerWidth-170)+'px';
+    ctx.style.top=Math.min(e.clientY,innerHeight-200)+'px';
+    ctx.classList.add('show');
+  });
+  canvas.addEventListener('dblclick',()=>{if(SEL)act('focus');});
+
+  // ── TOUCH ──
+  let tprev=[],tpinch=0,tmoved=false;
+  canvas.addEventListener('touchstart',e=>{
+    e.preventDefault();tmoved=false;
+    tprev=Array.from(e.touches).map(t=>({x:t.clientX,y:t.clientY}));
+    if(e.touches.length===2)tpinch=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY);
+  },{passive:false});
+  canvas.addEventListener('touchmove',e=>{
+    e.preventDefault();tmoved=true;
+    const cur=Array.from(e.touches).map(t=>({x:t.clientX,y:t.clientY}));
+    if(cur.length===1&&tprev.length>=1){
+      const dx=cur[0].x-tprev[0].x,dy=cur[0].y-tprev[0].y;
+      if((TOOL==='move'||TOOL==='rotate'||TOOL==='scale')&&SEL&&SEL.type==='MESH'){applyDrag(dx,dy);}
+      else{ORB.theta-=dx*.009;ORB.phi=clamp(ORB.phi+dy*.009,.05,Math.PI-.05);updateCam();}
+    }
+    if(cur.length===2&&tprev.length>=2){
+      const cx=(cur[0].x+cur[1].x)/2,cy=(cur[0].y+cur[1].y)/2;
+      const px=(tprev[0].x+tprev[1].x)/2,py=(tprev[0].y+tprev[1].y)/2;
+      doPan(cx-px,cy-py);
+      const dist=Math.hypot(cur[1].x-cur[0].x,cur[1].y-cur[0].y);
+      if(tpinch>0){ORB.r=clamp(ORB.r*(tpinch/dist),.3,2000);updateCam();onResize();}
+      tpinch=dist;
+    }
+    tprev=cur;
+  },{passive:false});
+  canvas.addEventListener('touchend',e=>{
+    e.preventDefault();
+    if(!tmoved&&e.changedTouches.length>0){const t=e.changedTouches[0];clickSelect(t.clientX,t.clientY,false);}
+  },{passive:false});
+
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.mitem')&&!e.target.closest('.mdrop'))closeMenus();
+    if(!e.target.closest('#ctx'))document.getElementById('ctx').classList.remove('show');
+  });
+}
+
+function applyDrag(dx,dy){
+  const spd=ORB.r*.004;
+  const right=new THREE.Vector3().setFromMatrixColumn(CAM.matrixWorld,0);
+  const up=new THREE.Vector3().setFromMatrixColumn(CAM.matrixWorld,1);
+  const m=SEL.mesh;
+  if(TOOL==='move'){
+    m.position.addScaledVector(right,dx*spd);m.position.addScaledVector(up,-dy*spd);
+    if(SEL.light)SEL.light.position.copy(m.position);
+    refreshPropsValues();
+  }else if(TOOL==='rotate'){
+    m.rotation.y+=dx*.012;m.rotation.x+=dy*.012;refreshPropsValues();
+  }else if(TOOL==='scale'){
+    const f=1+(dx-dy)*.006;m.scale.multiplyScalar(Math.max(.001,f));refreshPropsValues();
+  }
+}
+
+function doPan(dx,dy){
+  const spd=ORB.r*.001;
+  const right=new THREE.Vector3().setFromMatrixColumn(CAM.matrixWorld,0);
+  const up=new THREE.Vector3().setFromMatrixColumn(CAM.matrixWorld,1);
+  ORB.tx-=right.x*dx*spd*8;ORB.ty-=right.y*dx*spd*8;ORB.tz-=right.z*dx*spd*8;
+  ORB.tx+=up.x*dy*spd*8;ORB.ty+=up.y*dy*spd*8;ORB.tz+=up.z*dy*spd*8;
+  updateCam();
+}
+
+function clickSelect(cx,cy,additive){
+  if(MODE!=='object')return;
+  const canvas=document.getElementById('c');
+  const rect=canvas.getBoundingClientRect();
+  RAYCASTER.setFromCamera(new THREE.Vector2(((cx-rect.left)/rect.width)*2-1,-((cy-rect.top)/rect.height)*2+1),getCAM());
+  const hits=RAYCASTER.intersectObjects(OBJS.filter(o=>o.vis&&o.mesh).map(o=>o.mesh),true);
+  if(hits.length>0){
+    let h=hits[0].object;while(h.parent&&h.parent!==SCENE)h=h.parent;
+    const found=OBJS.find(o=>o.mesh===h);if(found){doSelect(found);return;}
+  }
+  if(!additive)clearAll();
+}
+
+// ── KEYS ──
+function setupKeys(){
+  document.addEventListener('keydown',e=>{
+    const tag=document.activeElement.tagName;
+    if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA')return;
+    switch(e.key){
+      case'g':case'G':setTool('move');break;
+      case'r':case'R':setTool('rotate');break;
+      case's':if(!e.ctrlKey&&!e.metaKey)setTool('scale');break;
+      case'w':case'W':case'q':case'Q':setTool('select');break;
+      case'Delete':case'Backspace':act('del');break;
+      case'a':case'A':if(!e.ctrlKey){SEL?clearAll():(OBJS.length&&doSelect(OBJS[0]));}break;
+      case'd':if(e.ctrlKey||e.metaKey){e.preventDefault();act('dup');}break;
+      case'n':if(e.ctrlKey||e.metaKey){e.preventDefault();act('newScene');}break;
+      case'Tab':e.preventDefault();setMode(MODE==='edit'?'object':'edit');break;
+      case'.':act('focus');break;
+      case'F12':act('saveRender');break;
+      case' ':e.preventDefault();tlAct('play');break;
+      case'ArrowLeft':tlAct('back');break;
+      case'ArrowRight':tlAct('fwd');break;
+      case'i':case'I':insertKF('all');break;
+      case'1':setView('front');break;case'3':setView('side');break;case'7':setView('top');break;
+      case'5':act('toggleOrtho');break;
+    }
+  });
+}
+
+// ── ACTIONS ──
+function act(a){
+  closeMenus();
+  switch(a){
+    case'del':
+      if(!SEL){toast('Nothing selected');return;}
+      if(SEL.light)SCENE.remove(SEL.light);SCENE.remove(SEL.mesh);
+      OBJS=OBJS.filter(o=>o!==SEL);SEL=null;refreshOL();refreshProps();refreshStatus();toast('Deleted');break;
+    case'dup':
+      if(!SEL||SEL.type!=='MESH'){toast('Select a mesh');return;}
+      const g2=SEL.mesh.geometry.clone(),m2=SEL.mesh.material.clone();
+      m2._hex=SEL.mesh.material._hex;m2._m=SEL.mesh.material._m;m2._r=SEL.mesh.material._r;m2._e=SEL.mesh.material._e;
+      const nm2=new THREE.Mesh(g2,m2);nm2.castShadow=nm2.receiveShadow=true;
+      nm2.position.copy(SEL.mesh.position);nm2.position.x+=1.5;
+      nm2.rotation.copy(SEL.mesh.rotation);nm2.scale.copy(SEL.mesh.scale);
+      SCENE.add(nm2);
+      const nobj={mesh:nm2,light:null,name:SEL.name+'.copy',type:'MESH',vis:true,kf:{}};
+      OBJS.push(nobj);doSelect(nobj);refreshOL();refreshStatus();toast('Duplicated');break;
+    case'selAll':if(OBJS.length)doSelect(OBJS[0]);break;
+    case'deselAll':clearAll();break;
+    case'focus':
+      if(SEL&&SEL.mesh){const p=new THREE.Vector3();SEL.mesh.getWorldPosition(p);ORB.tx=p.x;ORB.ty=p.y;ORB.tz=p.z;ORB.r=5;}
+      else{ORB.tx=0;ORB.ty=.5;ORB.tz=0;ORB.r=10;}
+      updateCam();onResize();toast('Focused');break;
+    case'viewAll':ORB.tx=0;ORB.ty=.5;ORB.tz=0;ORB.r=12;ORB.theta=.6;ORB.phi=1.1;updateCam();onResize();break;
+    case'toggleOrtho':ORTHO=!ORTHO;onResize();toast(ORTHO?'Orthographic':'Perspective');break;
+    case'newScene':
+      if(!confirm('New scene? Unsaved work lost.'))return;
+      OBJS.forEach(o=>{if(o.light)SCENE.remove(o.light);SCENE.remove(o.mesh);});
+      OBJS=[];SEL=null;KF={};buildScene();refreshOL();refreshProps();refreshStatus();drawTL();toast('New scene');break;
+    case'saveRender':
+      RENDERER.render(SCENE,getCAM());
+      const url=RENDERER.domElement.toDataURL('image/png');
+      const a2=document.createElement('a');a2.href=url;a2.download='forge3d.png';a2.click();toast('Render saved!');break;
+    case'resetLoc':if(SEL){SEL.mesh.position.set(0,1,0);refreshPropsValues();}break;
+    case'resetRot':if(SEL){SEL.mesh.rotation.set(0,0,0);refreshPropsValues();}break;
+    case'resetScale':if(SEL){SEL.mesh.scale.set(1,1,1);refreshPropsValues();}break;
+    case'fullscreen':document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();break;
+  }
+}
+
+function addObj(type){
+  closeMenus();document.getElementById('ctx').classList.remove('show');
+  const n=type.charAt(0).toUpperCase()+type.slice(1)+'.'+(OBJS.length+'').padStart(3,'0');
+  createMeshObj(type,n);refreshOL();refreshStatus();toast('Added '+n);
+}
+function addLight(type){closeMenus();document.getElementById('ctx').classList.remove('show');createLightObj(type,true);refreshOL();refreshStatus();toast('Added '+type+' light');}
+function addCamera(){closeMenus();createCamObj();refreshOL();refreshStatus();toast('Added camera');}
+
+// ── MODE / TOOL / SHADING / VIEW ──
+function setMode(m){
+  MODE=m;document.querySelectorAll('.modebtn').forEach(b=>b.classList.remove('on'));
+  const el=document.getElementById('mb-'+m);if(el)el.classList.add('on');
+  refreshBadge();refreshStatus();toast(m.charAt(0).toUpperCase()+m.slice(1)+' Mode');
+}
+function setTool(t){
+  TOOL=t;document.querySelectorAll('.tbtn[id^="t-"]').forEach(b=>b.classList.remove('on'));
+  const el=document.getElementById('t-'+t);if(el)el.classList.add('on');
+  refreshBadge();refreshStatus();
+}
+function setShading(s){
+  closeMenus();SHADING=s;
+  ['solid','wire','mat'].forEach(id=>{const el=document.getElementById('shd-'+id);if(el)el.classList.toggle('on',id===s);});
+  SCENE.background=new THREE.Color(s==='wire'?0x111111:0x3c3c3c);
+  OBJS.forEach(o=>{if(o.type==='MESH'&&o.mesh.material)o.mesh.material.wireframe=s==='wire';});
+  toast(s.charAt(0).toUpperCase()+s.slice(1)+' view');
+}
+function setView(v){
+  ORB.tx=0;ORB.ty=.5;ORB.tz=0;ORB.r=12;
+  if(v==='front'){ORB.theta=0;ORB.phi=Math.PI/2;}
+  if(v==='side'){ORB.theta=Math.PI/2;ORB.phi=Math.PI/2;}
+  if(v==='top'){ORB.theta=0;ORB.phi=.01;}
+  updateCam();onResize();toast(v.charAt(0).toUpperCase()+v.slice(1)+' view');
+}
+
+// ── MENUS ──
+function openMenu(btn,id){
+  const drop=document.getElementById(id);
+  const wasOpen=drop.classList.contains('show');
+  closeMenus();
+  if(!wasOpen){
+    const rect=btn.getBoundingClientRect();
+    drop.style.left=rect.left+'px';drop.style.top=rect.bottom+'px';
+    drop.classList.add('show');btn.classList.add('open');
+  }
+}
+function closeMenus(){
+  document.querySelectorAll('.mdrop.show').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.mbtn.open').forEach(b=>b.classList.remove('open'));
+}
+
+// ── PANEL ──
+function toggleRPanel(){rPanelOpen=!rPanelOpen;document.getElementById('rpanel').classList.toggle('hidden',!rPanelOpen);setTimeout(onResize,160);}
+function toggleTimeline(){tlVisible=!tlVisible;document.getElementById('timeline').style.display=tlVisible?'flex':'none';setTimeout(onResize,50);}
+function setRTab(t){['out','props'].forEach(id=>{document.getElementById('rt-'+id).classList.toggle('on',id===t);document.getElementById('rb-'+id).classList.toggle('on',id===t);});}
+
+// ── OUTLINER ──
+function refreshOL(){
+  const list=document.getElementById('ollist');list.innerHTML='';
+  OBJS.forEach(obj=>{
+    const ico=obj.type==='MESH'?'▣':obj.type==='LIGHT'?'💡':'📷';
+    const div=document.createElement('div');
+    div.className='olitem'+(obj===SEL?' sel':'');
+    div.innerHTML=`<span style="font-size:13px">${ico}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">${obj.name}</span><span style="font-size:10px;color:#555">${obj.type}</span><span class="eye">${obj.vis?'👁':'🚫'}</span>`;
+    div.addEventListener('click',e=>{if(e.target.classList.contains('eye')){e.stopPropagation();toggleVis(obj);return;}doSelect(obj);});
+    list.appendChild(div);
+  });
+}
+function toggleVis(obj){obj.vis=!obj.vis;obj.mesh.visible=obj.vis;if(obj.light)obj.light.visible=obj.vis;refreshOL();}
+function filterOL(q){document.querySelectorAll('.olitem').forEach((el,i)=>{const name=OBJS[i]?.name?.toLowerCase()||'';el.style.display=name.includes(q.toLowerCase())?'':'none';});}
+
+// ── PROPERTIES ──
+function refreshProps(){
+  const pno=document.getElementById('pno'),pb=document.getElementById('pbody'),sm=document.getElementById('s-mat-wrap');
+  if(!SEL){pno.style.display='';pb.style.display='none';return;}
+  pno.style.display='none';pb.style.display='';sm.style.display=SEL.type==='MESH'?'':'none';
+  refreshPropsValues();
+}
+function refreshPropsValues(){
+  if(!SEL||!SEL.mesh)return;
+  const m=SEL.mesh,v=n=>(isNaN(n)?0:+n.toFixed(3));
+  document.getElementById('pName').value=SEL.name;
+  document.getElementById('pType').value=SEL.type;
+  document.getElementById('pLX').value=v(m.position.x);document.getElementById('pLY').value=v(m.position.y);document.getElementById('pLZ').value=v(m.position.z);
+  document.getElementById('pRX').value=v(m.rotation.x*R2D);document.getElementById('pRY').value=v(m.rotation.y*R2D);document.getElementById('pRZ').value=v(m.rotation.z*R2D);
+  document.getElementById('pSX').value=v(m.scale.x);document.getElementById('pSY').value=v(m.scale.y);document.getElementById('pSZ').value=v(m.scale.z);
+  if(SEL.type==='MESH'&&m.material){
+    document.getElementById('pColor').value=m.material._hex||'#888888';
+    document.getElementById('pMetal').value=m.material._m??0.05;
+    document.getElementById('pRough').value=m.material._r??0.75;
+    document.getElementById('pEmit').value=m.material._e??0;
+  }
+}
+function setProp(p,v){
+  if(!SEL||!SEL.mesh)return;const m=SEL.mesh;
+  switch(p){
+    case'name':SEL.name=v;refreshOL();break;
+    case'lx':m.position.x=v;break;case'ly':m.position.y=v;break;case'lz':m.position.z=v;break;
+    case'rx':m.rotation.x=v*D2R;break;case'ry':m.rotation.y=v*D2R;break;case'rz':m.rotation.z=v*D2R;break;
+    case'sx':m.scale.x=v||.001;break;case'sy':m.scale.y=v||.001;break;case'sz':m.scale.z=v||.001;break;
+    case'color':if(m.material){m.material.color.set(v);m.material._hex=v;}break;
+    case'metal':if(m.material){m.material.metalness=v;m.material._m=v;}break;
+    case'rough':if(m.material){m.material.roughness=v;m.material._r=v;}break;
+    case'emit':if(m.material){m.material._e=v;m.material.emissive.set(m.material._hex||'#888888');m.material.emissiveIntensity=v;}break;
+  }
+  if(SEL.light)SEL.light.position.copy(m.position);
+}
+function toggleSec(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'':'none';}
+
+// ── STATUS ──
+function refreshStatus(){
+  document.getElementById('st-mode').textContent=MODE;document.getElementById('st-tool').textContent=TOOL;
+  document.getElementById('st-objs').textContent=OBJS.length;document.getElementById('st-sel').textContent=SEL?1:0;
+  if(SEL&&SEL.mesh&&SEL.mesh.geometry){
+    const g=SEL.mesh.geometry,vc=g.attributes.position?g.attributes.position.count:0,tc=g.index?Math.round(g.index.count/3):Math.round(vc/3);
+    document.getElementById('st-verts').textContent=vc;document.getElementById('st-tris').textContent=tc;
+  }else{document.getElementById('st-verts').textContent='0';document.getElementById('st-tris').textContent='0';}
+}
+function refreshBadge(){
+  const tips={select:'LMB=Select',move:'LMB drag=Move',rotate:'LMB drag=Rotate',scale:'LMB drag=Scale',cursor:'LMB=3D cursor'};
+  document.getElementById('vbadge').textContent=`${MODE.charAt(0).toUpperCase()+MODE.slice(1)} Mode — ${TOOL}  ·  ${tips[TOOL]||''}  ·  RMB=Orbit  Scroll=Zoom`;
+}
+
+// ── TIMELINE ──
+function setupTL(){
+  const canvas=document.getElementById('tlcanvas');
+  new ResizeObserver(drawTL).observe(canvas);
+  let dragging=null;
+  canvas.addEventListener('mousedown',e=>{
+    const rect=canvas.getBoundingClientRect();
+    const end=+document.getElementById('tlend').value||250;
+    const fw=rect.width/end;
+    const clickFr=Math.round((e.clientX-rect.left)/fw);
+    if(SEL&&KF[SEL.name]){
+      const channels=['lx','ly','lz','rx','ry','rz'];
+      for(const ch of channels){
+        if(!KF[SEL.name][ch])continue;
+        for(const kfr of Object.keys(KF[SEL.name][ch])){
+          if(Math.abs(clickFr-+kfr)<=2){dragging={ch,fr:+kfr};return;}
+        }
+      }
+    }
+    // No KF hit → set frame
+    FR=Math.max(1,Math.min(end,clickFr));
+    document.getElementById('tlframe').value=FR;applyKF();drawTL();
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    const canvas=document.getElementById('tlcanvas');
+    const rect=canvas.getBoundingClientRect();
+    const end=+document.getElementById('tlend').value||250;
+    const newFr=Math.max(1,Math.min(end,Math.round((e.clientX-rect.left)/rect.width*end)));
+    if(SEL&&KF[SEL.name]&&KF[SEL.name][dragging.ch]&&dragging.fr in KF[SEL.name][dragging.ch]){
+      const val=KF[SEL.name][dragging.ch][dragging.fr];
+      delete KF[SEL.name][dragging.ch][dragging.fr];
+      KF[SEL.name][dragging.ch][newFr]=val;
+      dragging.fr=newFr;
+      drawTL();
+    }
+  });
+  window.addEventListener('mouseup',()=>{dragging=null;});
+  drawTL();
+}
+
+function tlAct(a){
+  const end=+document.getElementById('tlend').value||250;
+  if(a==='play'){
+    TL_PLAYING=!TL_PLAYING;
+    const btn=document.getElementById('tlplay');
+    btn.textContent=TL_PLAYING?'⏸':'▶';btn.classList.toggle('on',TL_PLAYING);
+    if(TL_PLAYING){TL_TIMER=setInterval(()=>{FR++;if(FR>end)FR=1;document.getElementById('tlframe').value=FR;applyKF();drawTL();},1000/FR_FPS);}
+    else clearInterval(TL_TIMER);
+    return;
+  }
+  if(a==='first')FR=1;else if(a==='last')FR=end;else if(a==='back')FR=Math.max(1,FR-1);else if(a==='fwd')FR=Math.min(end,FR+1);
+  document.getElementById('tlframe').value=FR;applyKF();drawTL();
+}
+
+function setFrame(f){FR=Math.max(1,Math.min(+document.getElementById('tlend').value||250,isNaN(f)?1:f));applyKF();drawTL();}
+
+function insertKF(type){
+  if(!SEL){toast('Select an object first');return;}
+  if(!KF[SEL.name])KF[SEL.name]={};
+  const m=SEL.mesh;
+  const chs=type==='all'?['lx','ly','lz','rx','ry','rz','sx','sy','sz']:type==='loc'?['lx','ly','lz']:type==='rot'?['rx','ry','rz']:['sx','sy','sz'];
+  chs.forEach(ch=>{
+    if(!KF[SEL.name][ch])KF[SEL.name][ch]={};
+    const vals={lx:m.position.x,ly:m.position.y,lz:m.position.z,rx:m.rotation.x,ry:m.rotation.y,rz:m.rotation.z,sx:m.scale.x,sy:m.scale.y,sz:m.scale.z};
+    KF[SEL.name][ch][FR]=vals[ch];
+  });
+  toast(`Keyframe (${type}) at frame ${FR}`);drawTL();
+}
+
+function applyKF(){
+  OBJS.forEach(obj=>{
+    if(!KF[obj.name])return;
+    const m=obj.mesh;
+    const lerp=(ch,setter)=>{
+      const ch_kf=KF[obj.name][ch];if(!ch_kf)return;
+      const frames=Object.keys(ch_kf).map(Number).sort((a,b)=>a-b);
+      if(!frames.length)return;
+      if(FR<=frames[0]){setter(ch_kf[frames[0]]);return;}
+      if(FR>=frames[frames.length-1]){setter(ch_kf[frames[frames.length-1]]);return;}
+      for(let i=0;i<frames.length-1;i++){
+        if(FR>=frames[i]&&FR<=frames[i+1]){
+          const t=(FR-frames[i])/(frames[i+1]-frames[i]);
+          setter(ch_kf[frames[i]]*(1-t)+ch_kf[frames[i+1]]*t);return;
+        }
+      }
+    };
+    lerp('lx',v=>m.position.x=v);lerp('ly',v=>m.position.y=v);lerp('lz',v=>m.position.z=v);
+    lerp('rx',v=>m.rotation.x=v);lerp('ry',v=>m.rotation.y=v);lerp('rz',v=>m.rotation.z=v);
+    lerp('sx',v=>m.scale.x=v);lerp('sy',v=>m.scale.y=v);lerp('sz',v=>m.scale.z=v);
+    if(obj.light)obj.light.position.copy(m.position);
+  });
+  if(SEL)refreshPropsValues();
+}
+
+function drawTL(){
+  const canvas=document.getElementById('tlcanvas');
+  const W=canvas.width=canvas.offsetWidth||600;
+  const H=canvas.height=46;
+  if(W<=0)return;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#111';ctx.fillRect(0,0,W,H);
+  const end=+document.getElementById('tlend').value||250;
+  const fw=W/end;
+  const channels=['lx','ly','lz','rx','ry','rz'];
+  const chColors=['#e44','#4e4','#66f','#ea4','#4ea','#a4e'];
+  const rowH=H/channels.length;
+  channels.forEach((ch,i)=>{ctx.fillStyle=i%2?'#111':'#131313';ctx.fillRect(0,i*rowH,W,rowH);});
+  // ticks
+  ctx.lineWidth=1;
+  for(let f=0;f<=end;f+=5){
+    const x=f*fw;ctx.strokeStyle='#1e1e1e';
+    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    if(fw*10>14&&f%10===0){ctx.fillStyle='#444';ctx.font='8px sans-serif';ctx.fillText(f,x+2,9);}
+  }
+  // keyframe diamonds
+  if(SEL&&KF[SEL.name]){
+    channels.forEach((ch,row)=>{
+      const ch_kf=KF[SEL.name][ch];if(!ch_kf)return;
+      const cy=row*rowH+rowH/2;
+      Object.keys(ch_kf).forEach(kfr=>{
+        const x=+kfr*fw;
+        ctx.fillStyle=chColors[row];ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=.5;
+        ctx.beginPath();ctx.moveTo(x,cy-4);ctx.lineTo(x+4,cy);ctx.lineTo(x,cy+4);ctx.lineTo(x-4,cy);ctx.closePath();
+        ctx.fill();ctx.stroke();
+      });
+    });
+  }
+  // playhead
+  const fx=FR*fw;
+  ctx.strokeStyle='#3af';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(fx,0);ctx.lineTo(fx,H);ctx.stroke();
+  ctx.fillStyle='#3af';
+  ctx.beginPath();ctx.moveTo(fx-4,0);ctx.lineTo(fx+4,0);ctx.lineTo(fx,6);ctx.closePath();ctx.fill();
+  ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.fillText(FR,fx,H-1);
+}
+
+// ── GIZMO ──
+function drawGizmo(){
+  const canvas=document.getElementById('gizmo');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const sz=68,cx=sz/2,cy=sz/2,r=24;
+  ctx.clearRect(0,0,sz,sz);
+  ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.arc(cx,cy,r+5,0,Math.PI*2);ctx.fill();
+  const dir=new THREE.Vector3();CAM.getWorldDirection(dir);
+  const right=new THREE.Vector3().setFromMatrixColumn(CAM.matrixWorld,0);
+  const up=new THREE.Vector3().setFromMatrixColumn(CAM.matrixWorld,1);
+  const axes=[
+    {n:'X',c:'#e44',v:new THREE.Vector3(1,0,0)},{n:'Y',c:'#4e4',v:new THREE.Vector3(0,1,0)},{n:'Z',c:'#55f',v:new THREE.Vector3(0,0,1)},
+    {n:'',c:'#622',v:new THREE.Vector3(-1,0,0)},{n:'',c:'#262',v:new THREE.Vector3(0,-1,0)},{n:'',c:'#226',v:new THREE.Vector3(0,0,-1)},
+  ];
+  axes.sort((a,b)=>a.v.dot(dir)-b.v.dot(dir));
+  axes.forEach(ax=>{
+    const px=ax.v.dot(right)*r,py=-ax.v.dot(up)*r,neg=!ax.n;
+    ctx.globalAlpha=neg?.3:.9;ctx.strokeStyle=ax.c;ctx.lineWidth=neg?1:2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+px,cy+py);ctx.stroke();
+    if(!neg){
+      ctx.fillStyle=ax.c;ctx.beginPath();ctx.arc(cx+px,cy+py,5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 7px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(ax.n,cx+px,cy+py);
+    }
+  });
+  ctx.globalAlpha=1;
+}
+
+function showHelp(){toast('RMB=Orbit · Scroll=Zoom · MMB/Shift+RMB=Pan · G=Move · R=Rotate · S=Scale · W=Select · Del=Delete · .=Focus · I=Keyframe · Space=Play · 1/3/7=Views · Tab=EditMode · F12=Save',7000);}
+function showAbout(){alert('FORGE3D v2.0\nThree.js r128 Browser 3D Editor\n\nControls:\n• RMB drag = Orbit camera\n• Scroll = Zoom\n• MMB or Shift+RMB = Pan\n• LMB = Select object\n• G/R/S then LMB drag = Transform\n• Touch: 1 finger=Orbit, 2 finger=Pan+Zoom\n• I = Insert Keyframe\n• Space = Play animation\n• F12 = Save render');}
+
+let _tt;
+function toast(msg,dur=3000){const el=document.getElementById('toast');el.textContent=msg;el.style.display='block';clearTimeout(_tt);_tt=setTimeout(()=>el.style.display='none',dur);}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+
+// ── RENDER LOOP ──
+function loop(){
+  requestAnimationFrame(loop);
+  RENDERER.render(SCENE,getCAM());
+  OBJS.forEach(o=>{if(o.type==='LIGHT'&&o.mesh&&typeof o.mesh.update==='function')o.mesh.update();});
+  fpscount++;const now=performance.now();
+  if(now-fpslast>1000){fpsval=Math.round(fpscount*1000/(now-fpslast));document.getElementById('st-fps').textContent='FPS: '+fpsval;fpscount=0;fpslast=now;}
+}
+
+updateCam();
+</script>
+</body>
+</html>
